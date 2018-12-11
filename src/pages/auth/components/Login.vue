@@ -22,7 +22,7 @@
 
                 </el-col>
                 <el-col :span="10">
-                    <div style="position: fixed; left: 500px">
+                    <div style="position: fixed; left: 650px">
                         <div id="form-title">FasterRunner接口测试平台</div>
                         <form id="submit-form">
                             <div id="form-content">
@@ -69,10 +69,8 @@
 </template>
 
 <script>
-
     export default {
         name: "Login",
-
         data() {
             return {
                 loginForm: {
@@ -83,7 +81,8 @@
                 passwordInvalid: ''
             };
         },
-
+        // watch() {
+        // },
         methods: {
             validateUserName() {
                 if (this.loginForm.username.replace(/(^\s*)/g, "") === '') {
@@ -131,5 +130,4 @@
 </script>
 
 <style scoped>
-
 </style>

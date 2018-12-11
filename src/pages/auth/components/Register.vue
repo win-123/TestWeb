@@ -21,7 +21,7 @@
 
                 </el-col>
                 <el-col :span="10">
-                    <div style="position: fixed; left: 500px">
+                    <div style="position: fixed; left: 650px">
                         <div id="form-title">FasterRunner接口测试平台</div>
                         <form id="submit-form">
                             <div id="form-content">
@@ -87,7 +87,6 @@
 
 
 <script>
-
     export default {
         name: "Register",
         data() {
@@ -113,7 +112,6 @@
                 }
                 return true
             },
-
             validatePassword() {
                 const pPattern = /^[a-zA-Z\d_]{6,}$/;
                 if (!pPattern.test(this.registerForm.password)) {
@@ -122,7 +120,6 @@
                 }
                 return true
             },
-
             validateRepwd() {
                 if (this.registerForm.password !== this.registerForm.repwd) {
                     this.repwdInvalid = '确认密码和密码不一致';
@@ -130,7 +127,6 @@
                 }
                 return true
             },
-
             validateEmail() {
                 const ePattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
                 if (!ePattern.test(this.registerForm.email)) {
@@ -139,7 +135,6 @@
                 }
                 return true
             },
-
             handleRegisterSuccess(resp) {
                 if (resp['success']) {
                     this.$router.push('/fastrunner/login')
@@ -169,5 +164,4 @@
 </script>
 
 <style scoped>
-
 </style>

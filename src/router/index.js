@@ -21,7 +21,7 @@ export default new Router({
             name: 'Login',
             component: Login,
             meta: {
-                title: '用户登录'
+                title: 'FastRunner'
             }
         },
         {

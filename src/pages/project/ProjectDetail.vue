@@ -29,15 +29,12 @@
         <ul class="title-project">
             <li class="title-li" title="Test API Project">
                 <b>{{projectInfo.name}}</b>
+                <b class="desc-li">{{projectInfo.desc}}</b>
                 <a @click="dialogVisible = true" style="cursor: pointer">
                     <i class="iconfont">&#xe67d;</i>修改
                 </a>
 
             </li>
-            <li class="desc-li">
-                <p>{{projectInfo.desc}}</p>
-            </li>
-
         </ul>
 
         <ul class="project_detail">
@@ -116,7 +113,6 @@
                     duration: 1000
                 });
             },
-
             getProjectDetail() {
                 const pk = this.$route.params.id;
                 this.$api.getProjectDetail(pk).then(res => {
@@ -131,7 +127,6 @@
                     })
                 })
             },
-
             handleConfirm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -143,7 +138,6 @@
                             } else {
                                 this.failure(resp);
                             }
-
                             this.projectForm.name = this.projectInfo['name'];
                             this.projectForm.desc = this.projectInfo['desc'];
                         }).catch(resp => {
@@ -166,32 +160,25 @@
 </script>
 
 <style scoped>
-
-
     .desc-p {
         padding-top: 10px;
         font-size: 12px;
         color: #b6b6b6;
     }
-
     .title-p {
         font-size: 18px;
         margin-top: 10px;
     }
-
     .title-project li a {
         font-size: 12px;
         text-decoration: none;
         color: #a3a3a3;
         margin-left: 20px;
-
     }
-
     .pull-left {
         float: left;
         margin-left: 10px;
     }
-
     .project_detail li {
         margin-top: 10px;
         text-indent: 20px;
@@ -200,25 +187,20 @@
         width: calc(20% - 1.5px);
         border: 1px solid #ddd;
     }
-
     .project_detail {
         height: 100px;
     }
-
     .title-project {
         margin-top: 40px;
         margin-left: 10px;
     }
-
     ul li {
         list-style: none;
     }
-
     .title-li {
         font-size: 24px;
         color: #607d8b;
     }
-
     .desc-li {
         margin-top: 10px;
         color: #b6b6b6;
