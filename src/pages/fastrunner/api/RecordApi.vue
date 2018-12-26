@@ -151,6 +151,7 @@
                                 highlight-current
                                 :filter-node-method="filterNode"
                                 ref="tree2"
+                                @node-drag-end="handleDragEnd"
                             >
                             <span class="custom-tree-node"
                                   slot-scope="{ node, data }"
@@ -302,6 +303,9 @@
             }
         },
         methods: {
+            handleDragEnd(){
+                this.updateTree(false)
+            },
             handleAddSuccess (){
                 this.back = !this.back;
                 this.addAPIFlag = false;
