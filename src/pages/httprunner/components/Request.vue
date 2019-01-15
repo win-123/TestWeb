@@ -347,7 +347,7 @@
                 }
 
 
-                if (tempValue !== 0 && !tempValue && type !== 4) {
+                if (tempValue !== 0 && !tempValue && type !== 4 && type !== 1) {
                     this.$notify.error({
                         title: '类型转换错误',
                         message: msg,
@@ -412,9 +412,14 @@
     }
 </script>
 
-<style>
+<style scoped>
     .ace_editor {
-        font-size: 20px;
+        position: relative;
+        overflow: hidden;
+        font: 18px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
+        direction: ltr;
+        text-align: left;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
 
 </style>

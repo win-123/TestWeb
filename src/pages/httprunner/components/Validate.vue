@@ -10,7 +10,7 @@
     >
         <el-table-column
             label="断言类型"
-            width="160">
+            width="250">
             <template slot-scope="scope">
                 <el-tooltip
                     effect="dark"
@@ -34,7 +34,7 @@
         <el-table-column
             fixed
             label="实际返回值"
-            width="320">
+            width="400">
             <template slot-scope="scope">
                 <el-input clearable v-model="scope.row.actual" placeholder="实际返回值"></el-input>
             </template>
@@ -42,7 +42,7 @@
 
         <el-table-column
             label="期望类型"
-            width="120">
+            width="170">
             <template slot-scope="scope">
 
                 <el-select v-model="scope.row.type">
@@ -194,9 +194,10 @@
                             tempValue = false
                         }
                         break;
+
                 }
 
-                if (tempValue !== 0 && !tempValue && type !== 4) {
+                if (tempValue !== 0 && !tempValue && type !== 4 && type !== 1) {
                     this.$notify.error({
                         title: '类型转换错误',
                         message: msg,

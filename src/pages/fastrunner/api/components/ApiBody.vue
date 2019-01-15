@@ -22,10 +22,12 @@
                 <el-button
                     type="primary"
                     @click="reverseStatus"
+                    v-loading="loading"
+                    :disabled="loading"
                 >Send
                 </el-button>
-
             </div>
+
             <div>
                 <el-input
                     style="width: 600px; margin-top: 10px"
@@ -136,7 +138,9 @@
                     </hooks>
                 </el-tab-pane>
             </el-tabs>
+
         </div>
+
 
     </div>
 
@@ -200,7 +204,7 @@
             },
             handleHooks(hooks) {
                 this.hooks = hooks;
-                // 调用后台
+
                 if (!this.run) {
                     if (this.id === '') {
                         this.addAPI();
@@ -248,10 +252,6 @@
                         times: this.times,
                     }).then(resp => {
                         if (resp.success) {
-                            this.$message.success({
-                                message: '接口更新成功',
-                                duration: 1000
-                            });
                             this.$emit('addSuccess');
                         } else {
                             this.$message.error({
@@ -259,17 +259,13 @@
                                 duration: 1000
                             })
                         }
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
                     })
                 }
             },
 
             runAPI() {
                 if (this.validateData()) {
+                    this.loading = true;
                     this.$api.runSingleAPI({
                         header: this.header,
                         request: this.request,
@@ -286,11 +282,7 @@
                     }).then(resp => {
                         this.summary = resp;
                         this.dialogTableVisible = true;
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
+                        this.loading = false;
                     })
                 }
             },
@@ -313,10 +305,6 @@
 
                     }).then(resp => {
                         if (resp.success) {
-                            this.$message.success({
-                                message: '接口添加成功',
-                                duration: 1000
-                            });
                             this.$emit('addSuccess');
                         } else {
                             this.$message.error({
@@ -324,11 +312,6 @@
                                 duration: 1000
                             })
                         }
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
                     })
                 }
             }
@@ -345,6 +328,7 @@
         },
         data() {
             return {
+                loading: false,
                 times: 1,
                 name: '',
                 url: '',
@@ -355,7 +339,7 @@
                 validate: [],
                 variables: [],
                 hooks: [],
-                method: 'POST',
+                method: 'GET',
                 dialogTableVisible: false,
                 save: false,
                 run: false,

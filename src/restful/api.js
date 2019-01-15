@@ -1,14 +1,19 @@
 import axios from 'axios'
 import store from '../store/state'
 import router from '../router'
+import {Message} from 'element-ui'
 
-let baseUrl = " http://localhost:8000";
+export const baseUrl = "http://localhost:8000";
+// export const baseUrl = "http://39.108.239.78:8000";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = baseUrl;
 
 axios.interceptors.request.use(function (config) {
-    if (!config.url.startsWith("/api/user/")) {
+    if (config.url.indexOf("/api/fastrunner/project/?cursor=") !== -1 || config.url.indexOf("/api/fastrunner/database/?cursor=") !== -1) {
+
+    }
+    else if (!config.url.startsWith("/api/user/")) {
         config.url = config.url + "?token=" + store.token;
     }
     return config;
@@ -19,9 +24,24 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
-    if (error.response.status === 401) {
-        router.replace({
-            name: 'Login'
+    try {
+        if (error.response.status === 401) {
+            router.replace({
+                name: 'Login'
+            })
+        }
+
+        if (error.response.status === 500) {
+            Message.error({
+                message: '服务器内部异常, 请检查',
+                duration: 1000
+            })
+        }
+    }
+    catch (e) {
+        Message.error({
+            message: '服务器连接超时，请重试',
+            duration: 1000
         })
     }
 });
@@ -198,7 +218,7 @@ export const runSingleAPI = params => {
     return axios.post('/api/fastrunner/run_api/', params).then(res => res.data)
 };
 
-export const runAPIByPk = (url, params) => {
+export const runAPIByPk = url => {
     return axios.get('/api/fastrunner/run_api_pk/' + url + '/', params).then(res => res.data)
 };
 
@@ -214,7 +234,53 @@ export const runSingleTest = params => {
     return axios.post('/api/fastrunner/run_test/', params).then(res => res.data)
 };
 
-export const runTestByPk = (url, params)  => {
+export const runTestByPk = (url, params) => {
     return axios.get('/api/fastrunner/run_testsuite_pk/' + url + '/', params).then(res => res.data)
 };
 
+export const runSuiteTree = params => {
+    return axios.post('/api/fastrunner/run_suite_tree/', params).then(res => res.data)
+};
+
+export const addVariables = params => {
+    return axios.post('/api/fastrunner/variables/', params).then(res => res.data)
+};
+
+export const variablesList = params => {
+    return axios.get('/api/fastrunner/variables/', params).then(res => res.data)
+};
+
+export const getVariablesPaginationBypage = params => {
+    return axios.get('/api/fastrunner/variables/', params).then(res => res.data)
+};
+
+export const updateVariables = (url, params) => {
+    return axios.patch('/api/fastrunner/variables/' + url + '/', params).then(res => res.data)
+};
+
+export const deleteVariables = url => {
+    return axios.delete('/api/fastrunner/variables/' + url + '/').then(res => res.data)
+};
+
+export const delAllVariabels = params => {
+    return axios.delete('/api/fastrunner/variables/', params).then(res => res.data)
+};
+export const reportList = params => {
+    return axios.get('/api/fastrunner/reports/', params).then(res => res.data)
+};
+
+export const deleteReports = url => {
+    return axios.delete('/api/fastrunner/reports/' + url + '/').then(res => res.data)
+};
+
+export const getReportsPaginationBypage = params => {
+    return axios.get('/api/fastrunner/reports/', params).then(res => res.data)
+};
+
+export const delAllReports = params => {
+    return axios.delete('/api/fastrunner/reports/', params).then(res => res.data)
+};
+
+export const watchSingleReports = url => {
+    return axios.get('/api/fastrunner/reports/' + url + '/').then(res => res.data)
+};

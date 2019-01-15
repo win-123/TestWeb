@@ -3,7 +3,7 @@
         <el-header style="background: #F7F7F7; padding: 0; height: 50px">
             <div class="apiData">
                 <div style="padding-top: 10px; margin-left: 10px">
-                    <el-button type="success"
+                    <el-button type="primary"
                                size="small"
                                icon="el-icon-circle-plus"
                                @click="dialogVisible = true">
@@ -340,21 +340,11 @@
             getDataBaseList() {
                 this.$api.getDataBaseList().then(resp => {
                     this.dataBaseData = resp;
-                }).catch(resp => {
-                    this.$message.error({
-                        message:'服务器连接超时，请重试',
-                        duration:1000
-                    })
-                });
+                })
             },
             getPagination(url) {
                 this.$api.getPagination(url).then(resp => {
                     this.dataBaseData = resp;
-                }).catch(resp => {
-                    this.$message.error({
-                        message:'服务器连接超时，请重试',
-                        duration:1000
-                    })
                 })
             },
         },

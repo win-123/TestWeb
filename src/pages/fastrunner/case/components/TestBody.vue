@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div style="margin-top: 10px">
+        <div>
             <div>
                 <el-input
                     style="width: 600px"
@@ -29,6 +29,7 @@
                 <el-button
                     type="primary"
                     @click="handleRun"
+                    v-loading="loading"
                 >Run
                 </el-button>
 
@@ -168,9 +169,9 @@
         },
 
         props: {
-            config: {
-                require: true
-            },
+            // config: {
+            //     require: true
+            // },
             response: {
                 require: true
             }
@@ -224,18 +225,15 @@
                         times: this.times
                     };
                     if (this.run === true) {
+                        this.loading = true;
                         this.$api.runSingleTest({
                             body: {newBody: this.tempBody},
-                            config: this.config,
+                            // config: this.config,
                             project:this.$route.params.id
                         }).then(resp => {
                             this.summary = resp;
                             this.dialogTableVisible = true;
-                        }).catch(resp => {
-                            this.$message.error({
-                                message: '服务器连接超时，请重试',
-                                duration: 1000
-                            })
+                            this.loading = false;
                         })
                     } else {
                         this.$emit('getNewBody', body, this.tempBody);
@@ -274,6 +272,7 @@
         },
         data() {
             return {
+                loading:false,
                 run: false,
                 esc: false,
                 times: this.response.body.times,

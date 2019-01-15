@@ -2,16 +2,30 @@
     <el-container>
         <el-header style="padding: 0; height: 50px;">
             <div style=" padding-left: 10px;">
-                <el-pagination
-                    :page-size="11"
-                    v-show="apiData.count !== 0 "
-                    background
-                    @current-change="handleCurrentChange"
-                    :current-page.sync="currentPage"
-                    layout="total, prev, pager, next, jumper"
-                    :total="apiData.count"
-                >
-                </el-pagination>
+
+                <el-row :gutter="50">
+                    <el-col :span="6" v-if="apiData.count > 11">
+                        <el-input placeholder="请输入接口名称" clearable v-model="search">
+                            <el-button slot="append" icon="el-icon-search" @click="getAPIList"></el-button>
+                        </el-input>
+                    </el-col>
+
+                    <el-col :span="7">
+                        <el-pagination
+                            style="margin-top: 5px"
+                            :page-size="11"
+                            v-show="apiData.count !== 0 "
+                            background
+                            @current-change="handleCurrentChange"
+                            :current-page.sync="currentPage"
+                            layout="total, prev, pager, next, jumper"
+                            :total="apiData.count"
+                        >
+                        </el-pagination>
+                    </el-col>
+
+                </el-row>
+
             </div>
 
         </el-header>
@@ -93,7 +107,7 @@
                 </el-dialog>
 
 
-                <div style="position: fixed; bottom: 0; right:0; left: 480px; top: 160px">
+                <div style="position: fixed; bottom: 0; right:0; left: 500px; top: 160px">
                     <el-table
                         height="calc(100%)"
                         ref="multipleTable"
@@ -113,7 +127,7 @@
                         </el-table-column>
 
                         <el-table-column
-                            min-width="800"
+                            min-width="600"
                             align="center"
                         >
                             <template slot-scope="scope">
@@ -162,8 +176,7 @@
                             </template>
                         </el-table-column>
 
-                        <el-table-column
-                            width="140">
+                        <el-table-column>
                             <template slot-scope="scope">
                                 <el-row v-show="currentRow === scope.row">
                                     <el-button
@@ -200,6 +213,7 @@
 
 <script>
     import Report from '../../../reports/DebugReport'
+
     export default {
         components: {
             Report
@@ -222,6 +236,7 @@
         },
         data() {
             return {
+                search: '',
                 reportName: '',
                 asyncs: false,
                 filterText: '',
@@ -244,6 +259,7 @@
             filterText(val) {
                 this.$refs.tree.filter(val);
             },
+
             run() {
                 this.asyncs = false;
                 this.reportName = "";
@@ -253,6 +269,7 @@
                 this.getAPIList();
             },
             node() {
+                this.search = "";
                 this.getAPIList();
             },
             checked() {
@@ -262,6 +279,7 @@
                     this.toggleClear();
                 }
             },
+
             del() {
                 if (this.selectAPI.length !== 0) {
                     this.$confirm('此操作将永久删除API，是否继续?', '提示', {
@@ -271,11 +289,6 @@
                     }).then(() => {
                         this.$api.delAllAPI({data: this.selectAPI}).then(resp => {
                             this.getAPIList();
-                        }).catch(resp => {
-                            this.$message.error({
-                                message: '服务器连接超时，请重试',
-                                duration: 1000
-                            })
                         })
                     })
                 } else {
@@ -287,11 +300,13 @@
                 }
             }
         },
+
         methods: {
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
+
             runTree() {
                 this.dialogTreeVisible = false;
                 const relation = this.$refs.tree.getCheckedKeys();
@@ -318,11 +333,7 @@
                             this.summary = resp;
                             this.dialogTableVisible = true;
                         }
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
+
                     })
                 }
             },
@@ -330,19 +341,17 @@
                 this.$api.getTree(this.$route.params.id, {params: {type: 1}}).then(resp => {
                     this.dataTree = resp.tree;
                     this.dialogTreeVisible = true;
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
+
             handleSelectionChange(val) {
                 this.selectAPI = val;
             },
+
             toggleAll() {
                 this.$refs.multipleTable.toggleAllSelection();
             },
+
             toggleClear() {
                 this.$refs.multipleTable.clearSelection();
             },
@@ -351,17 +360,15 @@
                 this.$api.apiList({
                     params: {
                         node: this.node,
-                        project: this.project
+                        project: this.project,
+                        search: this.search
                     }
                 }).then(res => {
                     this.apiData = res;
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
+
+
             handleCurrentChange(val) {
                 this.$api.getPaginationBypage({
                     params: {
@@ -371,13 +378,9 @@
                     }
                 }).then(res => {
                     this.apiData = res;
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
+
             //删除api
             handleDelApi(index) {
                 this.$confirm('此操作将永久删除该API，是否继续?', '提示', {
@@ -391,14 +394,10 @@
                         } else {
                             this.$message.error(resp.msg);
                         }
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
                     })
                 })
             },
+
             // 编辑API
             handleRowClick(row) {
                 this.$api.getAPISingle(row.id).then(resp => {
@@ -407,37 +406,48 @@
                     } else {
                         this.$message.error(resp.msg)
                     }
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
             // 运行API
             handleRunAPI(id) {
                 this.loading = true;
-                this.$api.runAPIByPk(id, {params: {config: this.config}}).then(resp => {
+                this.$api.runAPIByPk(id, {
+                    params: {
+                        config: this.config
+                    }
+                }).then(resp => {
                     this.summary = resp;
                     this.dialogTableVisible = true;
                     this.loading = false;
-                }).catch(resp => {
-                    this.loading = false;
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
+
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
+
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
+            // searchAPI() {
+            //     this.$api.apiList({
+            //         params:{
+            //             node: "",
+            //             project: this.project,
+            //             search: this.search
+            //         }
+            //     }).then(res=>{
+            //         this.apiData = res
+            //     })
+            // }
+        },
+        mounted() {
+            this.getAPIList();
         }
     }
 </script>
 
 <style scoped>
+
+
 </style>

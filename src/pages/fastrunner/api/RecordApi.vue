@@ -1,11 +1,10 @@
 <template>
-
     <el-container>
         <el-header style="background: #fff; padding: 0; ">
             <div class="nav-api-header">
                 <div style="padding-top: 10px; margin-left: 10px">
                     <el-button
-                        type="success"
+                        type="primary"
                         size="small"
                         icon="el-icon-circle-plus"
                         @click="dialogVisible = true"
@@ -52,7 +51,17 @@
 
                     <el-button
                         :disabled="currentNode === '' "
-                        type="warning"
+                        type="info"
+                        size="small"
+                        icon="el-icon-edit-outline"
+                        @click="renameNode"
+                    >节点重命名
+                    </el-button>
+
+                    <el-button
+                        style="margin-left: 100px"
+                        :disabled="currentNode === '' "
+                        type="primary"
                         size="small"
                         icon="el-icon-circle-plus-outline"
                         @click="initResponse = true"
@@ -76,6 +85,30 @@
                     >导出接口
                     </el-button>
 
+                    <el-tooltip
+                        class="item"
+                        effect="dark"
+                        content="可选配置"
+                        placement="top-start"
+                    >
+                        <el-button plain size="small" icon="el-icon-view"></el-button>
+                    </el-tooltip>
+
+                    <el-select
+                        placeholder="请选择"
+                        size="small"
+                        tyle="margin-left: -6px"
+                        v-model="currentConfig"
+                    >
+                        <el-option
+                            v-for="item in configOptions"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                        </el-option>
+                    </el-select>
+
+
                     <el-checkbox
                         v-model="checked"
                         style="margin-left: 40px;"
@@ -89,7 +122,6 @@
                         icon="el-icon-caret-right"
                         circle
                         size="mini"
-                        :disabled="currentNode === ''"
                         @click="run = !run"
                     ></el-button>
 
@@ -104,31 +136,31 @@
                     ></el-button>
 
 
-                    <el-tooltip class="item" effect="dark" content="环境信息" placement="top-start">
-                        <el-button plain size="small" icon="el-icon-view"></el-button>
-                    </el-tooltip>
+                    <!--<el-tooltip class="item" effect="dark" content="环境信息" placement="top-start">-->
+                        <!--<el-button plain size="small" icon="el-icon-view"></el-button>-->
+                    <!--</el-tooltip>-->
 
-                    <el-select
-                        placeholder="请选择"
-                        size="small"
-                        tyle="margin-left: -6px"
-                        :disabled="currentNode === ''"
-                        v-model="currentConfig"
-                    >
-                        <el-option
-                            v-for="item in configOptions"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id">
-                        </el-option>
-                    </el-select>
+                    <!--<el-select-->
+                        <!--placeholder="请选择"-->
+                        <!--size="small"-->
+                        <!--tyle="margin-left: -6px"-->
+                        <!--:disabled="currentNode === ''"-->
+                        <!--v-model="currentConfig"-->
+                    <!--&gt;-->
+                        <!--<el-option-->
+                            <!--v-for="item in configOptions"-->
+                            <!--:key="item.id"-->
+                            <!--:label="item.name"-->
+                            <!--:value="item.id">-->
+                        <!--</el-option>-->
+                    <!--</el-select>-->
 
                 </div>
             </div>
         </el-header>
 
         <el-container>
-            <el-aside style="width: 260px; margin-top: 10px; ">
+            <el-aside style="margin-top: 10px;" >
                 <div class="nav-api-side">
                     <div class="api-tree">
                         <el-input
@@ -139,35 +171,31 @@
                             prefix-icon="el-icon-search"
                         >
                         </el-input>
-
-                        <div class="operation-li">
-                            <el-tree
-                                @node-click="handleNodeClick"
-                                :data="dataTree"
-                                node-key="id"
-                                :default-expand-all="false"
-                                :expand-on-click-node="false"
-                                draggable
-                                highlight-current
-                                :filter-node-method="filterNode"
-                                ref="tree2"
-                                @node-drag-end="handleDragEnd"
-                            >
+                        <el-tree
+                            @node-click="handleNodeClick"
+                            :data="dataTree"
+                            node-key="id"
+                            :default-expand-all="false"
+                            :expand-on-click-node="false"
+                            draggable
+                            highlight-current
+                            :filter-node-method="filterNode"
+                            ref="tree2"
+                            @node-drag-end="handleDragEnd"
+                        >
                             <span class="custom-tree-node"
                                   slot-scope="{ node, data }"
                             >
                                 <span><i class="iconfont" v-html="expand"></i>&nbsp;&nbsp;{{ node.label }}</span>
                             </span>
-                            </el-tree>
-
-                        </div>
+                        </el-tree>
                     </div>
 
                 </div>
 
             </el-aside>
 
-            <el-main style="padding: 0; ">
+            <el-main style="padding: 0;">
                 <api-body
                     v-show="addAPIFlag"
                     :nodeId="currentNode.id"
@@ -200,7 +228,6 @@
 <script>
     import ApiBody from './components/ApiBody'
     import ApiList from './components/ApiList'
-
     export default {
         watch: {
             filterText(val) {
@@ -211,7 +238,6 @@
             ApiBody,
             ApiList
         },
-
         computed: {
             initResponse: {
                 get() {
@@ -225,7 +251,7 @@
                             name: '',
                             times: 1,
                             url: '',
-                            method: 'POST',
+                            method: 'GET',
                             header: [{
                                 key: "",
                                 value: "",
@@ -277,7 +303,7 @@
                 back: false,
                 checked: false,
                 del: false,
-                run:false,
+                run: false,
                 response: '',
                 nodeForm: {
                     name: '',
@@ -290,7 +316,7 @@
                 },
                 radio: '根节点',
                 addAPIFlag: false,
-                currentConfig: '',
+                currentConfig: '请选择',
                 treeId: '',
                 maxId: '',
                 dialogVisible: false,
@@ -304,43 +330,31 @@
         },
         methods: {
             handleDragEnd(){
-                this.updateTree(false)
+                this.updateTree(false);
             },
-            handleAddSuccess (){
+            handleAddSuccess() {
                 this.back = !this.back;
                 this.addAPIFlag = false;
             },
-
             handleAPI(response) {
                 this.addAPIFlag = true;
                 this.response = response;
             },
-
             getTree() {
                 this.$api.getTree(this.$route.params.id, {params: {type: 1}}).then(resp => {
                     this.dataTree = resp['tree'];
                     this.treeId = resp['id'];
                     this.maxId = resp['max'];
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
-
             getConfig() {
                 this.$api.getAllConfig(this.$route.params.id).then(resp => {
                     this.configOptions = resp;
-                    this.configOptions.push({"name":"请选择", id:''})
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
+                    this.configOptions.push({
+                        name: '请选择'
                     })
                 })
             },
-
             updateTree(mode) {
                 this.$api.updateTree(this.treeId, {
                     body: this.dataTree,
@@ -355,14 +369,8 @@
                     } else {
                         this.$message.error(resp['msg']);
                     }
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
-
             deleteNode() {
                 this.$confirm('此操作将永久删除该节点下所有接口, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -379,8 +387,22 @@
                             this.updateTree(true);
                         }
                     }
-
                 })
+            },
+
+            renameNode() {
+                this.$prompt('请输入节点名', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern:  /\S/,
+                    inputErrorMessage: '节点名称不能为空'
+                }).then(({ value }) => {
+                    const parent = this.data.parent;
+                    const children = parent.data.children || parent.data;
+                    const index = children.findIndex(d => d.id === this.currentNode.id);
+                    children[index]["label"] = value
+                    this.updateTree(false);
+                });
             },
 
             handleConfirm(formName) {
@@ -392,25 +414,21 @@
                     }
                 });
             },
-
             handleNodeClick(node, data) {
                 this.addAPIFlag = false;
                 this.currentNode = node;
                 this.data = data;
             },
-
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
-
             remove(data, node) {
                 const parent = node.parent;
                 const children = parent.data.children || parent.data;
                 const index = children.findIndex(d => d.id === data.id);
                 children.splice(index, 1);
             },
-
             append(data) {
                 const newChild = {id: ++this.maxId, label: this.nodeForm.name, children: []};
                 if (data === '' || this.dataTree.length === 0 || this.radio === '根节点') {
@@ -422,17 +440,14 @@
                 }
                 data.children.push(newChild);
             }
-
         },
         name: "RecordApi",
         mounted() {
             this.getTree();
-            this.getConfig();
+            // this.getConfig();
         }
     }
 </script>
 
 <style scoped>
-
-
 </style>

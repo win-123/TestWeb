@@ -20,8 +20,8 @@
                     </div>
 
                 </el-col>
-                <el-col :span="10">
-                    <div style="position: fixed; left: 650px">
+                <el-col :span="24">
+                    <div>
                         <div id="form-title">FasterRunner接口测试平台</div>
                         <form id="submit-form">
                             <div id="form-content">
@@ -87,6 +87,7 @@
 
 
 <script>
+
     export default {
         name: "Register",
         data() {
@@ -112,6 +113,7 @@
                 }
                 return true
             },
+
             validatePassword() {
                 const pPattern = /^[a-zA-Z\d_]{6,}$/;
                 if (!pPattern.test(this.registerForm.password)) {
@@ -120,6 +122,7 @@
                 }
                 return true
             },
+
             validateRepwd() {
                 if (this.registerForm.password !== this.registerForm.repwd) {
                     this.repwdInvalid = '确认密码和密码不一致';
@@ -127,6 +130,7 @@
                 }
                 return true
             },
+
             validateEmail() {
                 const ePattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
                 if (!ePattern.test(this.registerForm.email)) {
@@ -135,6 +139,7 @@
                 }
                 return true
             },
+
             handleRegisterSuccess(resp) {
                 if (resp['success']) {
                     this.$router.push('/fastrunner/login')
@@ -151,17 +156,23 @@
                 if (this.validateUser() && this.validatePassword() && this.validateRepwd() && this.validateEmail()) {
                     this.$api.register(this.registerForm).then(resp => {
                         this.handleRegisterSuccess(resp)
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
                     })
                 }
+                // if (this.validateUser() && this.validatePassword() && this.validateRepwd() && this.validateEmail()) {
+                //     this.$api.register(this.registerForm).then(resp => {
+                //         this.handleRegisterSuccess(resp)
+                //     }).catch(resp => {
+                //         this.$message.error({
+                //             message: '服务器连接超时，请重试',
+                //             duration: 1000
+                //         })
+                //     })
+                // }
             }
         }
     }
 </script>
 
 <style scoped>
+
 </style>

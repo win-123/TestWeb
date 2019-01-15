@@ -21,8 +21,8 @@
                     </div>
 
                 </el-col>
-                <el-col :span="10">
-                    <div style="position: fixed; left: 650px">
+                <el-col :span="24">
+                    <div>
                         <div id="form-title">FasterRunner接口测试平台</div>
                         <form id="submit-form">
                             <div id="form-content">
@@ -69,8 +69,10 @@
 </template>
 
 <script>
+
     export default {
         name: "Login",
+
         data() {
             return {
                 loginForm: {
@@ -81,8 +83,7 @@
                 passwordInvalid: ''
             };
         },
-        // watch() {
-        // },
+
         methods: {
             validateUserName() {
                 if (this.loginForm.username.replace(/(^\s*)/g, "") === '') {
@@ -116,18 +117,30 @@
             submitForm() {
                 if (this.validateUserName() && this.validatePassword()) {
                     this.$api.login(this.loginForm).then(resp => {
+                        console.log("登录", this.$api)
+                        console.log("登录1",  resp)
+                        console.log("登录2",  this.handleLoginSuccess)
                         this.handleLoginSuccess(resp)
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
                     })
                 }
+                // if (this.validateUserName() && this.validatePassword()) {
+                //     this.$api.login(this.loginForm).then(resp => {
+                //         console.log("登录", this.$api)
+                //         console.log("登录1",  resp)
+                //         console.log("登录2",  this.handleLoginSuccess)
+                //         this.handleLoginSuccess(resp)
+                //     }).catch(resp => {
+                //         this.$message.error({
+                //             message: '服务器连接超时，请重试',
+                //             duration: 1000
+                //         })
+                //     })
+                // }
             }
         }
     }
 </script>
 
 <style scoped>
+
 </style>

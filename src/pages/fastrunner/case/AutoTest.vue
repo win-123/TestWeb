@@ -5,7 +5,7 @@
             <div class="nav-api-header">
                 <div style="padding-top: 10px; margin-left: 10px">
                     <el-button
-                        type="success"
+                        type="primary"
                         size="small"
                         icon="el-icon-circle-plus"
                         @click="dialogVisible = true"
@@ -52,8 +52,18 @@
                     </el-button>
 
                     <el-button
-                        type="warning"
+                        :disabled="currentNode === '' "
+                        type="info"
                         size="small"
+                        icon="el-icon-edit-outline"
+                        @click="renameNode"
+                    >节点重命名
+                    </el-button>
+
+                    <el-button
+                        type="primary"
+                        size="small"
+                        style="margin-left: 100px"
                         icon="el-icon-circle-plus-outline"
                         @click="buttonActivate=false"
                         :disabled="buttonActivate"
@@ -84,7 +94,7 @@
                         icon="el-icon-caret-right"
                         circle
                         size="mini"
-                        :disabled="currentNode === ''"
+                        @click="run = !run"
                     ></el-button>
 
                     <el-button
@@ -101,7 +111,7 @@
                     <el-tooltip
                         class="item"
                         effect="dark"
-                        content="环境信息"
+                        content="可选配置"
                         placement="top-start"
                     >
                         <el-button plain size="small" icon="el-icon-view"></el-button>
@@ -118,7 +128,7 @@
                             v-for="item in configOptions"
                             :key="item.id"
                             :label="item.name"
-                            :value="item.id">
+                            :value="item.name">
                         </el-option>
                     </el-select>
 
@@ -127,7 +137,8 @@
                         type="text"
                         style="position: absolute; right: 30px;"
                         @click="handleBackList"
-                    >返回列表</el-button>
+                    >返回列表
+                    </el-button>
 
                 </div>
             </div>
@@ -135,7 +146,7 @@
 
         <el-container>
             <el-aside
-                style="width: 260px; margin-top: 10px;"
+                style="margin-top: 10px;"
                 v-show="addTestActivate"
             >
                 <div class="nav-api-side">
@@ -149,30 +160,28 @@
                         >
                         </el-input>
 
-                        <div class="operation-li">
-                            <el-tree
-                                @node-click="handleNodeClick"
-                                :data="dataTree"
-                                node-key="id"
-                                :default-expand-all="false"
-                                :expand-on-click-node="false"
-                                draggable
-                                highlight-current
-                                :filter-node-method="filterNode"
-                                ref="tree2"
-                                @node-drag-end="handleDragEnd"
-                            >
+                        <el-tree
+                            @node-click="handleNodeClick"
+                            :data="dataTree"
+                            node-key="id"
+                            :default-expand-all="false"
+                            :expand-on-click-node="false"
+                            draggable
+                            highlight-current
+                            :filter-node-method="filterNode"
+                            ref="tree2"
+                            @node-drag-end="handleDragEnd"
+                        >
                             <span class="custom-tree-node"
                                   slot-scope="{ node, data }"
                             >
                                 <span><i class="iconfont" v-html="expand"></i>&nbsp;&nbsp;{{ node.label }}</span>
                             </span>
-                            </el-tree>
+                        </el-tree>
 
-                        </div>
                     </div>
-
                 </div>
+
 
             </el-aside>
 
@@ -180,11 +189,12 @@
                 <test-list
                     v-show="addTestActivate"
                     :project="$route.params.id"
-                    :node="currentNode.id"
+                    :node="currentNode !== '' ? currentNode.id : ''"
                     :del="del"
                     :config="currentConfig"
                     v-on:testStep="handleTestStep"
                     :back="back"
+                    :run="run"
                 >
                 </test-list>
 
@@ -208,18 +218,17 @@
 <script>
     import EditTest from './components/EditTest'
     import TestList from './components/TestList'
-
     export default {
         computed: {
-          buttonActivate: {
-              get: function () {
-                  return !this.addTestActivate || this.currentNode === '';
-              },
-              set: function (value) {
-                  this.addTestActivate =  value;
-                  this.testStepResp = [];
-              }
-          }
+            buttonActivate: {
+                get: function () {
+                    return !this.addTestActivate || this.currentNode === '';
+                },
+                set: function (value) {
+                    this.addTestActivate = value;
+                    this.testStepResp = [];
+                }
+            }
         },
         watch: {
             filterText(val) {
@@ -244,9 +253,10 @@
                 },
                 back: false,
                 del: false,
+                run: false,
                 radio: '根节点',
                 addTestActivate: true,
-                currentConfig: '',
+                currentConfig: '请选择',
                 treeId: '',
                 maxId: '',
                 dialogVisible: false,
@@ -255,33 +265,25 @@
                 filterText: '',
                 expand: '&#xe65f;',
                 dataTree: [],
-                configOptions: [{
-                    value: '测试环境',
-                    label: '测试环境'
-                }]
+                configOptions: []
             }
         },
         methods: {
             handleDragEnd(){
-                this.updateTree(false)
+                this.updateTree(false);
             },
             getConfig() {
                 this.$api.getAllConfig(this.$route.params.id).then(resp => {
                     this.configOptions = resp;
-                    this.configOptions.push({"name":"请选择", id:''})
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
+                    this.configOptions.push({
+                        name : "请选择"
                     })
                 })
             },
-
-            handleBackList () {
+            handleBackList() {
                 this.addTestActivate = true;
                 this.back = !this.back;
             },
-
             handleTestStep(resp) {
                 this.testStepResp = resp;
                 this.addTestActivate = false;
@@ -291,14 +293,8 @@
                     this.dataTree = resp['tree'];
                     this.treeId = resp['id'];
                     this.maxId = resp['max'];
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
-
             updateTree(mode) {
                 this.$api.updateTree(this.treeId, {
                     mode: mode,
@@ -313,12 +309,21 @@
                     } else {
                         this.$message.error(resp['msg']);
                     }
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
+            },
+            renameNode() {
+                this.$prompt('请输入节点名', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    inputPattern:  /\S/,
+                    inputErrorMessage: '节点名称不能为空'
+                }).then(({ value }) => {
+                    const parent = this.data.parent;
+                    const children = parent.data.children || parent.data;
+                    const index = children.findIndex(d => d.id === this.currentNode.id);
+                    children[index]["label"] = value
+                    this.updateTree(false);
+                });
             },
 
             deleteNode() {
@@ -337,10 +342,8 @@
                             this.updateTree(true);
                         }
                     }
-
                 })
             },
-
             handleConfirm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -350,24 +353,20 @@
                     }
                 });
             },
-
             handleNodeClick(node, data) {
                 this.currentNode = node;
                 this.data = data;
             },
-
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
-
             remove(data, node) {
                 const parent = node.parent;
                 const children = parent.data.children || parent.data;
                 const index = children.findIndex(d => d.id === data.id);
                 children.splice(index, 1);
             },
-
             append(data) {
                 const newChild = {id: ++this.maxId, label: this.nodeForm.name, children: []};
                 if (data === '' || this.dataTree.length === 0 || this.radio === '根节点') {
@@ -379,7 +378,6 @@
                 }
                 data.children.push(newChild);
             }
-
         },
         name: "AutoTest",
         mounted() {
@@ -390,7 +388,4 @@
 </script>
 
 <style scoped>
-
-
-
 </style>

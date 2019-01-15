@@ -3,7 +3,7 @@
         <el-header style="background: #F7F7F7; padding: 0; height: 50px">
             <div>
                 <div style="padding-top: 10px; margin-left: 10px;">
-                    <el-button type="success"
+                    <el-button type="primary"
                                size="small"
                                icon="el-icon-circle-plus"
                                @click="dialogVisible = true">
@@ -44,10 +44,10 @@
                                  label-width="100px"
                                  class="project">
                             <el-form-item label="项目名称" prop="name">
-                                <el-input v-model="projectForm.name"></el-input>
+                                <el-input v-model="projectForm.name" clearable></el-input>
                             </el-form-item>
                             <el-form-item label="项目描述" prop="desc">
-                                <el-input v-model="projectForm.desc"></el-input>
+                                <el-input v-model="projectForm.desc" clearable></el-input>
                             </el-form-item>
                         </el-form>
                         <span slot="footer" class="dialog-footer">
@@ -85,7 +85,7 @@
 
                     <el-table-column
                         label="负责人"
-                        width="150"
+                        width="200"
                         align="center"
                     >
                         <template slot-scope="scope">
@@ -108,7 +108,7 @@
                     </el-table-column>
 
                     <el-table-column
-                        label="最后修改时间"
+                        label="更新时间"
                         width="260"
                         align="center"
                     >
@@ -129,8 +129,16 @@
                         <template slot-scope="scope">
                             <el-button
                                 size="medium"
-                                @click="handleEdit(scope.$index, scope.row)">编辑
+                                type="primary"
+                                @click="handleCellClick(scope.row)"> 详情
                             </el-button>
+
+                            <el-button
+                                size="medium"
+                                type="primary"
+                                @click="handleEdit(scope.$index, scope.row)"> 编辑
+                            </el-button>
+
                             <el-dialog
                                 title="编辑项目"
                                 :visible.sync="editVisible"
@@ -142,10 +150,10 @@
                                          label-width="100px"
                                          class="project">
                                     <el-form-item label="项目名称" prop="name">
-                                        <el-input v-model="projectForm.name"></el-input>
+                                        <el-input v-model="projectForm.name" clearable ></el-input>
                                     </el-form-item>
                                     <el-form-item label="项目描述" prop="desc">
-                                        <el-input v-model="projectForm.desc"></el-input>
+                                        <el-input v-model="projectForm.desc" clearable ></el-input>
                                     </el-form-item>
                                 </el-form>
                                 <span slot="footer" class="dialog-footer">
@@ -198,9 +206,10 @@
         },
         methods: {
             handleCellClick(row) {
-                this.$store.commit('changeBackButton');
-                this.$store.commit('changeSideMenu');
-                this.$store.commit('changeItemUrl', 'ProjectDetail');
+                // this.$store.commit('changeBackButton');
+                // this.$store.commit('changeSideMenu');
+                // this.$store.commit('changeItemUrl', 'ProjectDetail');
+                this.$store.commit("changeBackButton", true);
                 this.$router.push({name: 'ProjectDetail', params: {id: row['id']}});
             },
             handleEdit(index, row) {
@@ -222,12 +231,7 @@
                         } else {
                             this.failure(resp);
                         }
-                    }).catch(resp => {
-                        this.$message.error({
-                            message: '服务器连接超时，请重试',
-                            duration: 1000
-                        })
-                    });
+                    })
                 })
             },
             handleConfirm(formName) {
@@ -253,12 +257,7 @@
                             this.projectForm.name = '';
                             this.projectForm.desc = '';
                             this.projectForm.id = '';
-                        }).catch(resp => {
-                            this.$message.error({
-                                message: '服务器连接超时，请重试',
-                                duration: 1000
-                            })
-                        });
+                        })
                     } else {
                         if (this.projectForm.id !== '') {
                             this.editVisible = true;
@@ -286,21 +285,11 @@
             getProjectList() {
                 this.$api.getProjectList().then(resp => {
                     this.projectData = resp;
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
-                });
+                })
             },
             getPagination(url) {
                 this.$api.getPagination(url).then(resp => {
                     this.projectData = resp;
-                }).catch(resp => {
-                    this.$message.error({
-                        message: '服务器连接超时，请重试',
-                        duration: 1000
-                    })
                 })
             },
         },

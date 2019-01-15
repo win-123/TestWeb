@@ -5,7 +5,7 @@
             <div class="nav-api-header">
                 <div style="padding-top: 10px; margin-left: 20px">
                     <el-button
-                        type="primary"
+                        type="warning"
                         size="small"
                         icon="el-icon-circle-plus-outline"
                         @click="initResponse = true"
@@ -75,13 +75,11 @@
 <script>
     import ConfigBody from './components/ConfigBody'
     import ConfigList from './components/ConfigList'
-
     export default {
         components: {
             ConfigBody,
             ConfigList
         },
-
         computed: {
             initResponse: {
                 get() {
@@ -129,7 +127,6 @@
                                 value: "",
                                 desc: "",
                             }],
-
                         }
                     };
                 }
@@ -148,7 +145,6 @@
                 this.back = !this.back;
                 this.addConfigActivate = false;
             },
-
             handleRespConfig(row) {
                 this.respConfig = row;
                 this.addConfigActivate = true;
@@ -156,12 +152,9 @@
         },
         name: "RecordConfig",
         mounted() {
-
         }
     }
 </script>
 
 <style>
-
-
 </style>
