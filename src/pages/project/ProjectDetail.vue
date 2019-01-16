@@ -54,10 +54,9 @@
             </li>
 
             <li class="pull-left">
-                <p class="title-p"><i class="iconfont">&#xee32;</i> &nbsp;{{projectInfo.variables_count}} 对全局变量</p>
-                <p class="desc-p">全局变量总数</p>
+                <p class="title-p"><i class="iconfont">&#xe63c;</i> &nbsp;{{projectInfo.variables_count}} 对全局变量</p>
+                <p class="desc-p">全局变量对数</p>
             </li>
-
         </ul>
 
         <ul class="project_detail">
@@ -72,7 +71,8 @@
             </li>
 
             <li class="pull-left">
-                <p class="title-p"><i class="iconfont">&#xe63b;</i> &nbsp;{{projectInfo.update_time | datetimeFormat}}</p>
+                <p class="title-p"><i class="iconfont">&#xe63b;</i> &nbsp;{{projectInfo.update_time | datetimeFormat}}
+                </p>
                 <p class="desc-p">最后更新时间</p>
             </li>
         </ul>
@@ -202,7 +202,6 @@
     .title-project {
         margin-top: 40px;
         margin-left: 10px;
-        /*padding-left: 50px;*/
     }
 
     ul li {

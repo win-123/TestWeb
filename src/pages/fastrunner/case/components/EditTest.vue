@@ -150,8 +150,7 @@
                              @drop='drop($event)'
                              @dragover='allowDrop($event)'
                         >
-                            <div class='test-list' >
-
+                            <div class='test-list'>
                                 <div
                                     v-if="isConfigExist"
                                     class="block block_test"
@@ -221,6 +220,7 @@
                                     </div>
                                 </draggable>
                             </div>
+
                         </div>
                     </el-col>
                 </el-row>
@@ -245,6 +245,7 @@
     import draggable from 'vuedraggable'
     import HttpRunner from './TestBody'
     import Report from '../../../reports/DebugReport'
+
     export default {
         components: {
             draggable,
@@ -276,6 +277,7 @@
             },
             back: Boolean
         },
+
         name: "EditTest",
         watch: {
             config() {
@@ -285,10 +287,12 @@
                 } else {
                     this.testData.splice(0, 1, temp)
                 }
+
             },
             back() {
                 this.editTestStepActivate = false;
             },
+
             filterText(val) {
                 this.$refs.tree2.filter(val);
             },
@@ -300,9 +304,11 @@
                     this.testName = '';
                     this.testId = '';
                 }
+
                 this.testData = JSON.parse(JSON.stringify(this.testStepResp))
             }
         },
+
         data() {
             return {
                 suite_loading: false,
@@ -325,10 +331,12 @@
                     count: 0,
                     results: []
                 },
+
                 testData: []
             }
         },
         methods: {
+
             handleNewBody(body, newBody) {
                 this.editTestStepActivate = false;
                 const step = this.testData[this.currentTest].case;
@@ -340,6 +348,7 @@
                     id: id
                 };
             },
+
             validateData() {
                 if (this.testName === '' || this.testName.length > 100) {
                     this.$notify.warning({
@@ -349,6 +358,7 @@
                     });
                     return false
                 }
+
                 if (this.testData.length === 0) {
                     this.$notify.warning({
                         title: '提示',
@@ -357,6 +367,7 @@
                     });
                     return false
                 }
+
                 if (this.testData[0].body.method === "config" && this.testData.length === 1) {
                     this.$notify.warning({
                         title: '提示',
@@ -366,10 +377,13 @@
                     return false
                 }
 
+
                 return true;
             },
+
             addTestSuite() {
                 var length = this.testData.length;
+
                 if (this.testData[0].body.method === "config") {
                     length -= 1;
                 }
@@ -381,7 +395,6 @@
                     body: this.testData
                 }).then(resp => {
                     if (resp.success) {
-
                         this.$emit("addSuccess");
                     } else {
                         this.$message({
@@ -392,6 +405,7 @@
                     }
                 })
             },
+
             updateTestSuite() {
                 var length = this.testData.length;
                 if (this.testData[0].body.method === "config") {
@@ -403,7 +417,6 @@
                     body: this.testData
                 }).then(resp => {
                     if (resp.success) {
-
                         this.$emit("addSuccess");
                     } else {
                         this.$message({
@@ -414,6 +427,7 @@
                     }
                 })
             },
+
             handleClickSave() {
                 if (this.validateData()) {
                     if (this.testId === '') {
@@ -423,21 +437,24 @@
                     }
                 }
             },
+
             handleClickRun() {
                 if (this.validateData()) {
                     this.suite_loading = true;
                     this.$api.runSingleTestSuite({
                         name: this.testName,
                         body: this.testData,
-                        config: this.config,
                         project: this.project
                     }).then(resp => {
                         this.suite_loading = false;
                         this.summary = resp;
                         this.dialogTableVisible = true;
+                    }).catch(resp => {
+                        this.suite_loading = false;
                     })
                 }
             },
+
             handleSingleRun() {
                 this.loading = true;
                 var config = null;
@@ -445,15 +462,18 @@
                     config = this.testData[0].body;
                 }
                 this.$api.runSingleTest({
+                    config: config,
                     body: this.testData[this.currentTest],
-                    config: this.config,
                     project: this.project
                 }).then(resp => {
                     this.loading = false;
                     this.summary = resp;
                     this.dialogTableVisible = true;
+                }).catch(resp => {
+                    this.loading = false;
                 })
             },
+
             handlePageChange(val) {
                 this.$api.getPaginationBypage({
                     params: {
@@ -465,17 +485,19 @@
                     this.apiData = res;
                 })
             },
+
             getAPIList() {
                 this.$api.apiList({
                     params: {
                         node: this.currentNode.id,
                         project: this.project,
-                        search: this.search
+                        search: ''
                     }
                 }).then(res => {
                     this.apiData = res;
                 })
             },
+
             getTree() {
                 this.$api.getTree(this.$route.params.id, {
                     params: {
@@ -485,20 +507,25 @@
                     this.dataTree = resp['tree'];
                 })
             },
+
             handleNodeClick(node, data) {
                 this.currentNode = node;
                 this.data = data;
                 this.getAPIList();
+
             },
+
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
+
             dragEnd(event) {
                 if (this.testData.length > this.length) {
                     this.testData.splice(this.length, 1)
                 }
             },
+
             drop(event) {
                 event.preventDefault();
                 this.testData.push(this.currentAPI);
@@ -506,6 +533,7 @@
             allowDrop(event) {
                 event.preventDefault();
             },
+
         },
         mounted() {
             this.getTree();
@@ -518,14 +546,17 @@
     .test-list {
         height: 590px;
     }
+
     .block_test {
         margin-top: 10px;
         border: 1px solid #49cc90;
         background-color: rgba(236, 248, 238, .4)
     }
+
     .block_method_test {
         background-color: #909399;
     }
+
     .block_method_config {
         background-color: red;
     }
@@ -540,5 +571,8 @@
         border: none;
         outline: none;
         background: rgba(236, 248, 238, .4)
+
     }
+
+
 </style>

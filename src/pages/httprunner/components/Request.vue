@@ -101,8 +101,7 @@
                 </el-table-column>
 
 
-                <el-table-column
-                    width="130">
+                <el-table-column>
                     <template slot-scope="scope">
                         <el-row v-show="scope.row === currentRow">
                             <el-button
@@ -345,7 +344,6 @@
                         }
                         break;
                 }
-
 
                 if (tempValue !== 0 && !tempValue && type !== 4 && type !== 1) {
                     this.$notify.error({

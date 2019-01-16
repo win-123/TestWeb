@@ -1,8 +1,8 @@
 {
   "name": "api-web",
   "version": "1.0.0",
-  "description": "A Vue.js project for api",
-  "author": "win",
+  "description": "A Vue.js project",
+  "author": "尹全旺 <1263374981@qq.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -47,6 +47,7 @@
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue-easytable": "^1.7.1",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",

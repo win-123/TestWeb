@@ -158,16 +158,6 @@
                         this.handleRegisterSuccess(resp)
                     })
                 }
-                // if (this.validateUser() && this.validatePassword() && this.validateRepwd() && this.validateEmail()) {
-                //     this.$api.register(this.registerForm).then(resp => {
-                //         this.handleRegisterSuccess(resp)
-                //     }).catch(resp => {
-                //         this.$message.error({
-                //             message: '服务器连接超时，请重试',
-                //             duration: 1000
-                //         })
-                //     })
-                // }
             }
         }
     }

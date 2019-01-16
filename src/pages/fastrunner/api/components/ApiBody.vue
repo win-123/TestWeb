@@ -140,7 +140,7 @@
             </el-tabs>
 
         </div>
-
+        
 
     </div>
 
@@ -168,13 +168,13 @@
         },
 
         props: {
-            config: {
-                require: true
-            },
             nodeId: {
                 require: false
             },
             project: {
+                require: false
+            },
+            config: {
                 require: false
             },
             response: {
@@ -277,8 +277,8 @@
                         method: this.method,
                         name: this.name,
                         times: this.times,
-                        config: this.config,
-                        project: this.project
+                        project: this.project,
+                        config: this.config
                     }).then(resp => {
                         this.summary = resp;
                         this.dialogTableVisible = true;

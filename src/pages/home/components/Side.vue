@@ -1,4 +1,5 @@
 <template>
+
     <el-menu
         class="common-side-bar"
         :default-active="$store.state.backButton === false ? defaultIndex : 'ProjectDetail'"
@@ -37,24 +38,11 @@
         </el-menu-item>
 
     </el-menu>
-
 </template>
 
 <script>
     export default {
         name: "Side",
-        methods:{
-            select(url) {
-                const array = ['DataBase', 'Index', 'ProjectList'];
-                if (array.indexOf(url) !== -1 ) {
-                    this.$store.commit('changeBackButton',false);
-                }
-                if(url === 'ProjectList' && this.$route.name !== 'ProjectList') {
-                    this.$store.commit('changeBackButton',false);
-                }
-                this.$router.push({name:url})
-            }
-        },
         data() {
             return {
                 defaultIndex: "ProjectDetail",
@@ -70,20 +58,33 @@
                     // {name: "压力测试", url: "Pressure", code: "&#xe61f;"}
                 ],
             }
+        },
+        methods:{
+            select(url) {
+                const array = ['DataBase', 'Index', 'ProjectList'];
+                if (array.indexOf(url) !== -1 ) {
+                    this.$store.commit('changeBackButton',false);
+                }
+
+                if(url === 'ProjectList' && this.$route.name !== 'ProjectList') {
+                    this.$store.commit('changeBackButton',false);
+                }
+
+                this.$router.push({name:url})
+            }
         }
     }
 </script>
 
 <style scoped>
+
     .common-side-bar {
         position: fixed;
-        top:48px;
+        top: 48px;
         border-right: 1px solid #ddd;
         height: 100%;
         width: 202px;
         background-color: #fff;
         display: inline-block;
     }
-
-
 </style>

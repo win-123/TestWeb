@@ -115,12 +115,12 @@
                     >
                         <el-table-column
                             type="selection"
-                            width="55">
+                            width="55"
+                        >
                         </el-table-column>
 
                         <el-table-column
                             label="用例集名称"
-                            width="420"
                         >
                             <template slot-scope="scope">
                                 <div>{{scope.row.name}}</div>
@@ -129,7 +129,6 @@
 
                         <el-table-column
                             label="API个数"
-                            width="300"
                         >
                             <template slot-scope="scope">
                                 <div>{{scope.row.length}} 个</div>
@@ -138,7 +137,6 @@
 
 
                         <el-table-column
-                            width="300"
                             label="更新时间"
                         >
                             <template slot-scope="scope">
@@ -148,7 +146,6 @@
                         </el-table-column>
 
                         <el-table-column
-                            width="300"
                         >
                             <template slot-scope="scope">
                                 <el-row v-show="currentRow === scope.row">
@@ -195,11 +192,14 @@
 
 <script>
     import Report from '../../../reports/DebugReport'
+
     export default {
+
         name: "TestList",
         components: {
             Report
         },
+
         props: {
             run: Boolean,
             back: Boolean,
@@ -211,10 +211,12 @@
             },
             del: Boolean
         },
+
         watch: {
             filterText(val) {
                 this.$refs.tree.filter(val);
             },
+
             run() {
                 this.asyncs = false;
                 this.reportName = "";
@@ -224,9 +226,11 @@
                 this.search = '';
                 this.getTestList();
             },
+
             back() {
                 this.getTestList();
             },
+
             del() {
                 if (this.selectTest.length !== 0) {
                     this.$confirm('此操作将永久删除测试用例集，是否继续?', '提示', {
@@ -268,6 +272,7 @@
                 currentPage: 1,
             }
         },
+
         methods: {
             getTree() {
                 this.$api.getTree(this.$route.params.id, {params: {type: 2}}).then(resp => {
@@ -275,10 +280,12 @@
                     this.dialogTreeVisible = true;
                 })
             },
+
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
+
             runTree() {
                 this.dialogTreeVisible = false;
                 const relation = this.$refs.tree.getCheckedKeys();
@@ -307,6 +314,7 @@
                     })
                 }
             },
+
             handleRunTest(id, name) {
                 this.loading = true;
                 this.$api.runTestByPk(id, {params: {project: this.project, name: name}}).then(resp => {
@@ -329,11 +337,13 @@
                     this.testData = resp;
                 })
             },
+
             handleEditTest(id) {
                 this.$api.editTest(id).then(resp => {
                     this.$emit('testStep', resp);
                 })
             },
+
             handleCopyTest(id) {
                 this.$prompt('请输入用例集名称', '提示', {
                     confirmButtonText: '确定',
@@ -353,9 +363,11 @@
                     })
                 })
             },
+
             handleSelectionChange(val) {
                 this.selectTest = val;
             },
+
             handleDelTest(id) {
                 this.$confirm('此操作将永久删除该测试用例集，是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -385,15 +397,17 @@
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
+
             cellMouseLeave(row) {
                 this.currentRow = '';
             }
         },
         mounted() {
-            this.getTestList()
+           this.getTestList()
         }
     }
 </script>
 
 <style scoped>
+
 </style>

@@ -1,6 +1,5 @@
 <template>
 
-
     <el-container>
         <el-header style="background: #fff; padding: 0; height: 50px">
             <div class="nav-api-header">
@@ -164,7 +163,6 @@
 <script>
     import AddTasks from './AddTasks'
     export default {
-
         components:{
             AddTasks
         },
@@ -184,6 +182,7 @@
                             time: '11',
                             receiver: '1263374981@qq.com',
                             copy: 'copy@lexinfintech.com'
+
                         }
                     ]
                 },
@@ -193,16 +192,19 @@
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
+
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
         },
         name: "Tasks",
         mounted() {
+
         }
     }
 </script>
 
-<style scoped>
+<style>
+
 
 </style>

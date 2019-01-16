@@ -2,7 +2,6 @@
     <el-container>
         <el-header style="padding: 0; height: 50px;">
             <div style=" padding-left: 10px;">
-
                 <el-row :gutter="50">
                     <el-col :span="6" v-if="apiData.count > 11">
                         <el-input placeholder="请输入接口名称" clearable v-model="search">
@@ -25,9 +24,7 @@
                     </el-col>
 
                 </el-row>
-
             </div>
-
         </el-header>
 
         <el-container>
@@ -269,7 +266,7 @@
                 this.getAPIList();
             },
             node() {
-                this.search = "";
+                this.search = '';
                 this.getAPIList();
             },
             checked() {
@@ -320,9 +317,9 @@
                     this.$api.runAPITree({
                         "project": this.project,
                         "relation": relation,
-                        "config": this.config,
                         "async": this.asyncs,
-                        "name": this.reportName
+                        "name": this.reportName,
+                        "config": this.config
                     }).then(resp => {
                         if (resp.hasOwnProperty("status")) {
                             this.$message.info({
@@ -374,7 +371,8 @@
                     params: {
                         page: this.currentPage,
                         node: this.node,
-                        project: this.project
+                        project: this.project,
+                        search: this.search
                     }
                 }).then(res => {
                     this.apiData = res;
@@ -419,6 +417,8 @@
                     this.summary = resp;
                     this.dialogTableVisible = true;
                     this.loading = false;
+                }).catch(resp => {
+                    this.loading = false;
                 })
             },
 
@@ -428,18 +428,7 @@
 
             cellMouseLeave(row) {
                 this.currentRow = '';
-            },
-            // searchAPI() {
-            //     this.$api.apiList({
-            //         params:{
-            //             node: "",
-            //             project: this.project,
-            //             search: this.search
-            //         }
-            //     }).then(res=>{
-            //         this.apiData = res
-            //     })
-            // }
+            }
         },
         mounted() {
             this.getAPIList();

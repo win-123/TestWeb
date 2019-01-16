@@ -12,10 +12,9 @@ import AutoTest from '@/pages/fastrunner/case/AutoTest'
 import GlobalEnv from '@/pages/variables/GlobalEnv'
 import ReportList from '@/pages/reports/ReportList'
 import RecordConfig from '@/pages/fastrunner/config/RecordConfig'
-
 import Tasks from '@/pages/task/Tasks'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
     mode: "history",
@@ -42,13 +41,14 @@ export default new Router({
             meta: {
                 title: '用户登录'
             }
-        },
-        {
+        }, {
+
             path: '/fastrunner',
             name: 'Index',
             component: Home,
             meta: {
                 title: '首页',
+                requireAuth: true
             },
             children: [
                 {
@@ -82,7 +82,7 @@ export default new Router({
                 },
                 {
                     name: 'RecordApi',
-                    path:'api_record/:id',
+                    path: 'api_record/:id',
                     component: RecordApi,
                     meta: {
                         title: '接口模板',
@@ -148,18 +148,21 @@ export default new Router({
                         title: '压力测试',
                         requireAuth: true
                     }
+
                 },
                 {
                     name: 'DataBase',
                     path: 'database',
                     component: DataBase,
                     meta: {
-                        title: '数据库',
-                        requireAuth: true,
+                        title: '数据库管理',
+                        requireAuth: true
                     }
-                },
 
+                }
             ]
-        }
+        },
+
     ]
 })
+

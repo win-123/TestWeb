@@ -60,6 +60,7 @@
                     >节点重命名
                     </el-button>
 
+
                     <el-button
                         type="primary"
                         size="small"
@@ -123,6 +124,7 @@
                         size="small"
                         tyle="margin-left: -6px"
                         v-model="currentConfig"
+                        :disabled="addTestActivate"
                     >
                         <el-option
                             v-for="item in configOptions"
@@ -189,9 +191,8 @@
                 <test-list
                     v-show="addTestActivate"
                     :project="$route.params.id"
-                    :node="currentNode !== '' ? currentNode.id : ''"
+                    :node="currentNode !== '' ? currentNode.id : '' "
                     :del="del"
-                    :config="currentConfig"
                     v-on:testStep="handleTestStep"
                     :back="back"
                     :run="run"
@@ -218,6 +219,7 @@
 <script>
     import EditTest from './components/EditTest'
     import TestList from './components/TestList'
+
     export default {
         computed: {
             buttonActivate: {
@@ -269,21 +271,23 @@
             }
         },
         methods: {
-            handleDragEnd(){
+            handleDragEnd() {
                 this.updateTree(false);
             },
             getConfig() {
                 this.$api.getAllConfig(this.$route.params.id).then(resp => {
                     this.configOptions = resp;
                     this.configOptions.push({
-                        name : "请选择"
+                        name: '请选择'
                     })
                 })
             },
+
             handleBackList() {
                 this.addTestActivate = true;
                 this.back = !this.back;
             },
+
             handleTestStep(resp) {
                 this.testStepResp = resp;
                 this.addTestActivate = false;
@@ -295,6 +299,7 @@
                     this.maxId = resp['max'];
                 })
             },
+
             updateTree(mode) {
                 this.$api.updateTree(this.treeId, {
                     mode: mode,
@@ -303,7 +308,6 @@
                     type: 2
                 }).then(resp => {
                     if (resp['success']) {
-                        this.$message.success(resp['msg']);
                         this.dataTree = resp['tree'];
                         this.maxId = resp['max'];
                     } else {
@@ -315,9 +319,9 @@
                 this.$prompt('请输入节点名', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    inputPattern:  /\S/,
+                    inputPattern: /\S/,
                     inputErrorMessage: '节点名称不能为空'
-                }).then(({ value }) => {
+                }).then(({value}) => {
                     const parent = this.data.parent;
                     const children = parent.data.children || parent.data;
                     const index = children.findIndex(d => d.id === this.currentNode.id);
@@ -342,8 +346,10 @@
                             this.updateTree(true);
                         }
                     }
+
                 })
             },
+
             handleConfirm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -353,20 +359,24 @@
                     }
                 });
             },
+
             handleNodeClick(node, data) {
                 this.currentNode = node;
                 this.data = data;
             },
+
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
+
             remove(data, node) {
                 const parent = node.parent;
                 const children = parent.data.children || parent.data;
                 const index = children.findIndex(d => d.id === data.id);
                 children.splice(index, 1);
             },
+
             append(data) {
                 const newChild = {id: ++this.maxId, label: this.nodeForm.name, children: []};
                 if (data === '' || this.dataTree.length === 0 || this.radio === '根节点') {
@@ -378,6 +388,7 @@
                 }
                 data.children.push(newChild);
             }
+
         },
         name: "AutoTest",
         mounted() {
@@ -388,4 +399,6 @@
 </script>
 
 <style scoped>
+
+
 </style>

@@ -22,7 +22,7 @@
 
         <el-table-column
             label="测试之后执行的方法"
-            width="450">
+            width="500">
             <template slot-scope="scope">
                 <el-input clearable
                           v-model="scope.row.teardown"
@@ -33,8 +33,7 @@
         </el-table-column>
 
 
-        <el-table-column
-            width="130">
+        <el-table-column>
             <template slot-scope="scope">
                 <el-row v-show="scope.row === currentRow">
                     <el-button

@@ -75,7 +75,6 @@
                         align="center"
                     >
                         <template slot-scope="scope">
-                            <i class="iconfont">&#xe64a;</i>
                             <span
                                 style="font-size: 18px; font-weight: bold; cursor: pointer;"
                                 @click="handleCellClick(scope.row)"
@@ -130,13 +129,13 @@
                             <el-button
                                 size="medium"
                                 type="primary"
-                                @click="handleCellClick(scope.row)"> 详情
+                                @click="handleCellClick(scope.row)">详情
                             </el-button>
 
                             <el-button
                                 size="medium"
                                 type="primary"
-                                @click="handleEdit(scope.$index, scope.row)"> 编辑
+                                @click="handleEdit(scope.$index, scope.row)">编辑
                             </el-button>
 
                             <el-dialog
@@ -150,10 +149,10 @@
                                          label-width="100px"
                                          class="project">
                                     <el-form-item label="项目名称" prop="name">
-                                        <el-input v-model="projectForm.name" clearable ></el-input>
+                                        <el-input v-model="projectForm.name" clearable></el-input>
                                     </el-form-item>
                                     <el-form-item label="项目描述" prop="desc">
-                                        <el-input v-model="projectForm.desc" clearable ></el-input>
+                                        <el-input v-model="projectForm.desc" clearable></el-input>
                                     </el-form-item>
                                 </el-form>
                                 <span slot="footer" class="dialog-footer">
@@ -206,10 +205,7 @@
         },
         methods: {
             handleCellClick(row) {
-                // this.$store.commit('changeBackButton');
-                // this.$store.commit('changeSideMenu');
-                // this.$store.commit('changeItemUrl', 'ProjectDetail');
-                this.$store.commit("changeBackButton", true);
+                this.$store.commit('changeBackButton', true);
                 this.$router.push({name: 'ProjectDetail', params: {id: row['id']}});
             },
             handleEdit(index, row) {

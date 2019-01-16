@@ -140,13 +140,16 @@
 </template>
 
 <script>
+
     export default {
+
         name: "AddTasks",
         watch: {
             filterText(val) {
                 this.$refs.tree2.filter(val);
             },
         },
+
         data() {
             return {
                 currentNode: '',
@@ -217,11 +220,14 @@
                     this.dataTree = resp.tree;
                 })
             },
+
             handleNodeClick(node, data) {
                 this.currentNode = node;
                 this.data = data;
                 this.getTestList();
+
             },
+
             getTestList() {
                 this.$api.testList({
                     params: {
@@ -240,17 +246,21 @@
 </script>
 
 <style scoped>
+
     .test-list {
         height: 590px;
     }
+
     .block_test {
         margin-top: 10px;
         border: 1px solid #49cc90;
         background-color: rgba(236, 248, 238, .4)
     }
+
     .block_method_test {
         background-color: #304056;
     }
+
     .block-test-name {
         width: 700px;
         padding-left: 10px;
@@ -261,5 +271,8 @@
         border: none;
         outline: none;
         background: rgba(236, 248, 238, .4)
+
     }
+
+
 </style>

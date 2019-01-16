@@ -31,7 +31,7 @@
                                     <div class="form-input-div">
                                         <i class="iconfont"
                                            style="position: absolute; bottom: 250px; padding-left: 10px">&#xe61c;</i>
-                                        <input placeholder="用户名或邮箱" type="text" id="email" v-model="loginForm.username">
+                                        <input placeholder="用户名" type="text" id="email" v-model="loginForm.username">
                                         <div class="err_msg" id="email_err" v-html="usernameInvalid" @mouseover="usernameInvalid=''"></div>
                                     </div>
                                     <div class="form-input-div">
@@ -84,6 +84,10 @@
             };
         },
 
+        watch() {
+
+        },
+
         methods: {
             validateUserName() {
                 if (this.loginForm.username.replace(/(^\s*)/g, "") === '') {
@@ -117,25 +121,9 @@
             submitForm() {
                 if (this.validateUserName() && this.validatePassword()) {
                     this.$api.login(this.loginForm).then(resp => {
-                        console.log("登录", this.$api)
-                        console.log("登录1",  resp)
-                        console.log("登录2",  this.handleLoginSuccess)
                         this.handleLoginSuccess(resp)
                     })
                 }
-                // if (this.validateUserName() && this.validatePassword()) {
-                //     this.$api.login(this.loginForm).then(resp => {
-                //         console.log("登录", this.$api)
-                //         console.log("登录1",  resp)
-                //         console.log("登录2",  this.handleLoginSuccess)
-                //         this.handleLoginSuccess(resp)
-                //     }).catch(resp => {
-                //         this.$message.error({
-                //             message: '服务器连接超时，请重试',
-                //             duration: 1000
-                //         })
-                //     })
-                // }
             }
         }
     }

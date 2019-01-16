@@ -79,8 +79,8 @@
             <el-header style="padding: 0; height: 50px;">
                 <div style="padding-top: 8px; padding-left: 30px; overflow: hidden">
                     <el-row :gutter="50">
-                        <el-col :span="6" v-if="variablesData.count > 11">
-                            <el-input placeholder="请输入变量名称" clearable v-model="search">
+                        <el-col :span="6">
+                            <el-input placeholder="请输入变量名称" v-if="variablesData.count > 11" clearable v-model="search">
                                 <el-button slot="append" icon="el-icon-search" @click="getVariablesList"></el-button>
                             </el-input>
                         </el-col>
@@ -114,12 +114,12 @@
                         >
                             <el-table-column
                                 type="selection"
-                                width="55">
+                                width="55"
+                            >
                             </el-table-column>
 
                             <el-table-column
                                 label="变量名"
-                                width="350"
                             >
                                 <template slot-scope="scope">
                                     <div>{{scope.row.key}}</div>
@@ -127,7 +127,6 @@
                             </el-table-column>
 
                             <el-table-column
-                                width="450"
                                 label="变量值"
                             >
                                 <template slot-scope="scope">
@@ -137,7 +136,6 @@
                             </el-table-column>
 
                             <el-table-column
-                                width="300"
                                 label="更新时间"
                             >
                                 <template slot-scope="scope">
@@ -146,9 +144,7 @@
                                 </template>
                             </el-table-column>
 
-                            <el-table-column
-                                width="250"
-                            >
+                            <el-table-column>
                                 <template slot-scope="scope">
                                     <el-row v-show="currentRow === scope.row">
                                         <el-button
@@ -181,10 +177,13 @@
 </template>
 
 <script>
+
     export default {
+
+
         data() {
             return {
-                search: "",
+                search: '',
                 selectVariables: [],
                 currentRow: '',
                 currentPage: 1,
@@ -199,11 +198,13 @@
                     value: '',
                     project: this.$route.params.id
                 },
+
                 editVariablesForm: {
                     key: '',
                     value: '',
                     id: ''
                 },
+
                 rules: {
                     key: [
                         {required: true, message: '请输入变量名', trigger: 'blur'},
@@ -220,17 +221,21 @@
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
+
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
+
             handleEditVariables(row) {
                 this.editVariablesForm = {
                     key: row.key,
                     value: row.value,
                     id: row.id
                 };
+
                 this.editdialogVisible = true;
             },
+
             handleDelVariables(index) {
                 this.$confirm('此操作将永久删除该全局变量，是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -249,6 +254,7 @@
             handleSelectionChange(val) {
                 this.selectVariables = val;
             },
+
             handleCurrentChange(val) {
                 this.$api.getVariablesPaginationBypage({
                     params: {
@@ -279,6 +285,7 @@
                     })
                 }
             },
+
             handleConfirm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -295,9 +302,12 @@
                                 this.getVariablesList();
                             }
                         })
+
                     }
                 });
+
             },
+
             handleEditConfirm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -314,12 +324,14 @@
                         })
                     }
                 });
+
             },
+
             getVariablesList() {
                 this.$api.variablesList({
                     params: {
-                        search: this.search,
-                        project: this.variablesForm.project
+                        project: this.variablesForm.project,
+                        search: this.search
                     }
                 }).then(resp => {
                     this.variablesData = resp;
@@ -334,4 +346,6 @@
 </script>
 
 <style>
+
+
 </style>

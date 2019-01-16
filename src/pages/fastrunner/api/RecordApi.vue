@@ -1,4 +1,5 @@
 <template>
+
     <el-container>
         <el-header style="background: #fff; padding: 0; ">
             <div class="nav-api-header">
@@ -49,6 +50,7 @@
                     >删除分组
                     </el-button>
 
+
                     <el-button
                         :disabled="currentNode === '' "
                         type="info"
@@ -57,6 +59,7 @@
                         @click="renameNode"
                     >节点重命名
                     </el-button>
+
 
                     <el-button
                         style="margin-left: 100px"
@@ -94,6 +97,7 @@
                         <el-button plain size="small" icon="el-icon-view"></el-button>
                     </el-tooltip>
 
+
                     <el-select
                         placeholder="请选择"
                         size="small"
@@ -107,7 +111,6 @@
                             :value="item.name">
                         </el-option>
                     </el-select>
-
 
                     <el-checkbox
                         v-model="checked"
@@ -136,31 +139,12 @@
                     ></el-button>
 
 
-                    <!--<el-tooltip class="item" effect="dark" content="环境信息" placement="top-start">-->
-                        <!--<el-button plain size="small" icon="el-icon-view"></el-button>-->
-                    <!--</el-tooltip>-->
-
-                    <!--<el-select-->
-                        <!--placeholder="请选择"-->
-                        <!--size="small"-->
-                        <!--tyle="margin-left: -6px"-->
-                        <!--:disabled="currentNode === ''"-->
-                        <!--v-model="currentConfig"-->
-                    <!--&gt;-->
-                        <!--<el-option-->
-                            <!--v-for="item in configOptions"-->
-                            <!--:key="item.id"-->
-                            <!--:label="item.name"-->
-                            <!--:value="item.id">-->
-                        <!--</el-option>-->
-                    <!--</el-select>-->
-
                 </div>
             </div>
         </el-header>
 
         <el-container>
-            <el-aside style="margin-top: 10px;" >
+            <el-aside style="margin-top: 10px;">
                 <div class="nav-api-side">
                     <div class="api-tree">
                         <el-input
@@ -201,8 +185,8 @@
                     :nodeId="currentNode.id"
                     :project="$route.params.id"
                     :response="response"
-                    :config="currentConfig"
                     v-on:addSuccess="handleAddSuccess"
+                    :config="currentConfig"
                 >
                 </api-body>
 
@@ -212,10 +196,10 @@
                     v-on:api="handleAPI"
                     :node="currentNode !== '' ? currentNode.id : '' "
                     :project="$route.params.id"
+                    :config="currentConfig"
                     :del="del"
                     :back="back"
                     :run="run"
-                    :config="currentConfig"
                 >
                 </api-list>
 
@@ -228,6 +212,7 @@
 <script>
     import ApiBody from './components/ApiBody'
     import ApiList from './components/ApiList'
+
     export default {
         watch: {
             filterText(val) {
@@ -238,6 +223,7 @@
             ApiBody,
             ApiList
         },
+
         computed: {
             initResponse: {
                 get() {
@@ -300,6 +286,8 @@
         },
         data() {
             return {
+                configOptions: [],
+                currentConfig: '请选择',
                 back: false,
                 checked: false,
                 del: false,
@@ -316,7 +304,6 @@
                 },
                 radio: '根节点',
                 addAPIFlag: false,
-                currentConfig: '请选择',
                 treeId: '',
                 maxId: '',
                 dialogVisible: false,
@@ -325,21 +312,22 @@
                 filterText: '',
                 expand: '&#xe65f;',
                 dataTree: [],
-                configOptions: []
             }
         },
         methods: {
-            handleDragEnd(){
+            handleDragEnd() {
                 this.updateTree(false);
             },
             handleAddSuccess() {
                 this.back = !this.back;
                 this.addAPIFlag = false;
             },
+
             handleAPI(response) {
                 this.addAPIFlag = true;
                 this.response = response;
             },
+
             getTree() {
                 this.$api.getTree(this.$route.params.id, {params: {type: 1}}).then(resp => {
                     this.dataTree = resp['tree'];
@@ -363,7 +351,6 @@
                     type: 1
                 }).then(resp => {
                     if (resp['success']) {
-                        this.$message.success(resp['msg']);
                         this.dataTree = resp['tree'];
                         this.maxId = resp['max'];
                     } else {
@@ -371,6 +358,7 @@
                     }
                 })
             },
+
             deleteNode() {
                 this.$confirm('此操作将永久删除该节点下所有接口, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -387,6 +375,7 @@
                             this.updateTree(true);
                         }
                     }
+
                 })
             },
 
@@ -394,9 +383,9 @@
                 this.$prompt('请输入节点名', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                    inputPattern:  /\S/,
+                    inputPattern: /\S/,
                     inputErrorMessage: '节点名称不能为空'
-                }).then(({ value }) => {
+                }).then(({value}) => {
                     const parent = this.data.parent;
                     const children = parent.data.children || parent.data;
                     const index = children.findIndex(d => d.id === this.currentNode.id);
@@ -404,6 +393,7 @@
                     this.updateTree(false);
                 });
             },
+
 
             handleConfirm(formName) {
                 this.$refs[formName].validate((valid) => {
@@ -414,21 +404,25 @@
                     }
                 });
             },
+
             handleNodeClick(node, data) {
                 this.addAPIFlag = false;
                 this.currentNode = node;
                 this.data = data;
             },
+
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
+
             remove(data, node) {
                 const parent = node.parent;
                 const children = parent.data.children || parent.data;
                 const index = children.findIndex(d => d.id === data.id);
                 children.splice(index, 1);
             },
+
             append(data) {
                 const newChild = {id: ++this.maxId, label: this.nodeForm.name, children: []};
                 if (data === '' || this.dataTree.length === 0 || this.radio === '根节点') {
@@ -440,14 +434,17 @@
                 }
                 data.children.push(newChild);
             }
+
         },
         name: "RecordApi",
         mounted() {
             this.getTree();
-            // this.getConfig();
+            this.getConfig();
         }
     }
 </script>
 
 <style scoped>
+
+
 </style>
