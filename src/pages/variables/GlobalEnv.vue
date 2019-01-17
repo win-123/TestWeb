@@ -139,8 +139,7 @@
                                 label="更新时间"
                             >
                                 <template slot-scope="scope">
-                                    <div>{{scope.row.update_time|datetimeFormat}}</div>
-
+                                    <!--<div>{{scope.row.update_time|datetimeFormat}}</div>-->
                                 </template>
                             </el-table-column>
 

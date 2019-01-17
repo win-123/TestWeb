@@ -256,7 +256,7 @@
                                     desc: "",
                                     type: 1
                                 }],
-                                json_data: ''
+                                json_data: '{"key": "value"}'
                             },
                             validate: [{
                                 expect: "",
