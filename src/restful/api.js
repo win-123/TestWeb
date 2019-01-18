@@ -4,8 +4,8 @@ import router from '../router'
 import {Message} from 'element-ui';
 
 
-export const baseUrl = "http://localhost:8000";
-// export const baseUrl = "http://39.108.239.78:8000";
+// export const baseUrl = "http://localhost:8000";
+export const baseUrl = "http://39.107.76.94:8000";
 
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = baseUrl;
