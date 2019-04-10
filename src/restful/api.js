@@ -1,14 +1,21 @@
 import axios from 'axios'
 import store from '../store/state'
 import router from '../router'
-import {Message} from 'element-ui';
+import {Message} from 'element-ui'
 
+if (process.env.NODE_ENV == 'development') {
+    axios.defaults.baseURL = '/api'
+} else if (process.env.NODE_ENV == 'debug') {
+    axios.defaults.baseURL = '/api'
+} else if (process.env.NODE_ENV == 'production') {
+    axios.defaults.baseURL = '/api'
+}
 
 // export const baseUrl = "http://localhost:8000";
-export const baseUrl = "http://39.107.76.94:8000";
+// export const baseUrl = "http://39.107.76.94:8000";
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = baseUrl;
+axios.defaults.baseURL = '/api'
 
 axios.interceptors.request.use(function (config) {
     if (config.url.indexOf("/api/fastrunner/project/?cursor=") !== -1 || config.url.indexOf("/api/fastrunner/database/?cursor=") !== -1) {

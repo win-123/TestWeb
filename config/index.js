@@ -6,23 +6,24 @@ const path = require('path')
 
 module.exports = {
     dev: {
-
         // Paths
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-           /* '/httprunner': {
-                target: 'http://localhost:8000',//设置你调用的接口域名和端口号 别忘了加http
+            '/api': {
+                target: 'http://127.0.0.1:8000',
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/httprunner': ''
+                    '/api': '/api'
                 }
-            }*/
+            },
         },
 
         // Various Dev Server settings
-        host: 'localhost', // can be overwritten by process.variables.HOST
-        port: 9090, // can be overwritten by process.variables.PORT, if port is in use, a free one will be determined
+        // localhost
+        // --host 172.20.10.4
+        host: 'localhost', // can be overwritten by process.env.HOST
+        port: 3334, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
         autoOpenBrowser: false,
         errorOverlay: true,
         notifyOnErrors: true,
@@ -51,7 +52,7 @@ module.exports = {
         // Paths
         assetsRoot: path.resolve(__dirname, '../dist'),
         assetsSubDirectory: 'static',
-        assetsPublicPath: './',
+        assetsPublicPath: '/',
 
         /**
          * Source Maps
