@@ -17,76 +17,72 @@ if (process.env.NODE_ENV == 'development') {
 axios.defaults.withCredentials = true;
 // axios.defaults.baseURL = '/api'
 
-axios.interceptors.request.use(function (config) {
-    if (config.url.indexOf("/fastrunner/project/?cursor=") !== -1 || config.url.indexOf("/fastrunner/database/?cursor=") !== -1) {
-    }
+// 请求超时时间
+axios.defaults.timeout = 10000;
+
+// post请求头
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+
+// 请求拦截器
+axios.interceptors.request.use(
+    config => {
+    if (
+        config.url.indexOf("/fastrunner/project/?cursor=") !== -1 || config.url.indexOf("/fastrunner/database/?cursor=") !== -1
+    ) {}
     else if (!config.url.startsWith("/user/")) {
         config.url = config.url + "?token=" + store.token;
     }
     return config;
-}, function (error) {
+}, error => {
     return Promise.reject(error);
 });
 
-axios.interceptors.response.use(function (response) {
-    return response;
-}, function (error) {
-    try {
-        if (error.response.status === 401) {
-            router.replace({
-                name: 'Login'
-            })
-        }
+// 响应拦截器
+axios.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => {
+        try {
+            if (error.response.status === 401) {
+                router.replace({
+                    name: 'Login'
+                })
+            }
 
-        if (error.response.status === 500) {
+            if (error.response.status === 500) {
+                Message.error({
+                    message: '服务器内部异常, 请检查',
+                    duration: 1000
+                })
+            }
+        }
+        catch (e) {
             Message.error({
-                message: '服务器内部异常, 请检查',
+                message: '服务器连接超时，请重试',
                 duration: 1000
             })
-        }
-    }
-    catch (e) {
-        Message.error({
-            message: '服务器连接超时，请重试',
-            duration: 1000
-        })
     }
 });
 
-// usermanager api
-export const register = params => {
-    return axios.post('/user/register/', params).then(res => res.data)
-};
+// 用户注册登录相关URL配置
+export const register = params => {return axios.post('/user/register/', params).then(res => res.data)}; // 注册
 
-export const login = params => {
-    return axios.post('/user/login/', params).then(res => res.data)
-};
+export const login = params => {return axios.post('/user/login/', params).then(res => res.data)};  // 登录
 
 
-// fastrunner api
-export const addProject = params => {
-    return axios.post('/fastrunner/project/', params).then(res => res.data)
-};
+// 项目中用户行为相关配置
+export const addProject = params => {return axios.post('/fastrunner/project/', params).then(res => res.data)};  // 添加项目
 
-export const deleteProject = config => {
-    return axios.delete('/fastrunner/project/', config).then(res => res.data)
-};
+export const deleteProject = config => {return axios.delete('/fastrunner/project/', config).then(res => res.data)}; // 删除项目
 
-export const getProjectList = params => {
-    return axios.get('/fastrunner/project/').then(res => res.data)
-};
+export const getProjectList = params => {return axios.get('/fastrunner/project/').then(res => res.data)};  // 获取项目列表
 
-export const getProjectDetail = pk => {
-    return axios.get('/fastrunner/project/' + pk + '/').then(res => res.data)
-};
+export const getProjectDetail = pk => {return axios.get('/fastrunner/project/' + pk + '/').then(res => res.data)};  // 获取项目详情
 
-export const getPagination = url => {
-    return axios.get(url).then(res => res.data)
-};
+export const getPagination = url => {return axios.get(url).then(res => res.data)};  // 分页
 
-export const updateProject = params => {
-    return axios.patch('/fastrunner/project/', params).then(res => res.data)
-};
+export const updateProject = params => {return axios.patch('/fastrunner/project/', params).then(res => res.data)};  //  更新项目
 
 export const addDataBase = params => {
     return axios.post('/fastrunner/database/', params).then(res => res.data)
