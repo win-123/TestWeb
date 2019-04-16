@@ -45,6 +45,7 @@
             <el-main style="padding: 0; margin-left: 10px;">
                 <div style="position: fixed; bottom: 0; right:0; left: 220px; top: 120px">
                     <el-table
+                        highlight-current-row
                         :data="reportData.results"
                         :show-header="reportData.results.length !== 0 "
                         stripe
@@ -77,6 +78,18 @@
                         </el-table-column>
 
                         <el-table-column
+                            label="通过状态"
+                        >
+                            <template slot-scope="scope">
+                                <div
+                                    :class="{'pass': scope.row.success, 'fail':!scope.row.success}"
+                                    v-text="scope.row.success === true ? 'Pass' :'Fail'"
+                                ></div>
+                            </template>
+                        </el-table-column>
+
+
+                        <el-table-column
                             label="测试时间"
                         >
                             <template slot-scope="scope">
@@ -96,7 +109,7 @@
 
                         <el-table-column
                             width="80"
-                            label="总计用例"
+                            label="总计接口"
                         >
                             <template slot-scope="scope">
                                 <el-tag>{{ scope.row.stat.testsRun }}</el-tag>
@@ -108,7 +121,7 @@
                             label="通过个数"
                         >
                             <template slot-scope="scope">
-                                <el-tag type="success">{{ scope.row.stat.successes }}</el-tag>
+                                <el-tag type="success"> {{ scope.row.stat.successes }}</el-tag>
                             </template>
                         </el-table-column>
 
@@ -145,9 +158,9 @@
                             <template slot-scope="scope">
                                 <el-popover trigger="hover" placement="top">
                                     <p>HttpRunner: {{ scope.row.platform.httprunner_version }}</p>
-                                    <p>Python: {{ scope.row.platform.python_version }}</p>
+                                    <p>Platform: {{ scope.row.platform.platform }}</p>
                                     <div slot="reference" class="name-wrapper">
-                                        <el-tag size="medium">{{ scope.row.platform.platform }}</el-tag>
+                                        <el-tag size="medium">{{ scope.row.platform.python_version }}</el-tag>
                                     </div>
                                 </el-popover>
                             </template>
@@ -186,10 +199,7 @@
 </template>
 
 <script>
-
     export default {
-
-
         data() {
             return {
                 search: '',
@@ -206,22 +216,15 @@
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             handleWatchReports(index) {
                 window.open(this.$api.baseUrl + "/api/fastrunner/reports/" + index + "/")
-
             },
-
-
             handleSelectionChange(val) {
                 this.selectReports = val;
             },
-
-
             handleCurrentChange(val) {
                 this.$api.getReportsPaginationBypage({
                     params: {
@@ -233,7 +236,6 @@
                     this.reportData = resp;
                 })
             },
-
             handleDelReports(index) {
                 this.$confirm('此操作将永久删除该测试报告，是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -249,7 +251,6 @@
                     })
                 })
             },
-
             delSelectionReports() {
                 if (this.selectReports.length !== 0) {
                     this.$confirm('此操作将永久删除勾选的测试报告，是否继续?', '提示', {
@@ -287,7 +288,13 @@
     }
 </script>
 
-<style>
-
-
+<style scoped>
+    .pass {
+        font-weight: bold;
+        color: #13ce66;
+    }
+    .fail {
+        font-weight: bold;
+        color: red;
+    }
 </style>

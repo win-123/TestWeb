@@ -188,6 +188,7 @@ export const getTestPaginationBypage = params => {
     return axios.get('/fastrunner/test/', params).then(res => res.data)
 };
 
+// 配置管理
 export const addConfig = params => {
     return axios.post('/fastrunner/config/', params).then(res => res.data)
 };
@@ -220,7 +221,7 @@ export const getAllConfig = url => {
     return axios.get('/fastrunner/config/' + url + '/').then(res => res.data)
 };
 
-
+// API配置
 export const runSingleAPI = params => {
     return axios.post('/fastrunner/run_api/', params).then(res => res.data)
 };
@@ -233,6 +234,7 @@ export const runAPITree = params => {
     return axios.post('/fastrunner/run_api_tree/', params).then(res => res.data)
 };
 
+// 测试配置
 export const runSingleTestSuite = params => {
     return axios.post('/fastrunner/run_testsuite/', params).then(res => res.data)
 };
@@ -249,6 +251,7 @@ export const runSuiteTree = params => {
     return axios.post('/fastrunner/run_suite_tree/', params).then(res => res.data)
 };
 
+// 变亮配置
 export const addVariables = params => {
     return axios.post('/fastrunner/variables/', params).then(res => res.data)
 };
@@ -274,6 +277,7 @@ export const delAllVariabels = params => {
     return axios.delete('/fastrunner/variables/', params).then(res => res.data)
 };
 
+// 报告配置
 export const reportList = params => {
     return axios.get('/fastrunner/reports/', params).then(res => res.data)
 };
@@ -292,4 +296,43 @@ export const delAllReports = params => {
 
 export const watchSingleReports = url => {
     return axios.get('/fastrunner/reports/' + url + '/').then(res => res.data)
+};
+
+//  任务配置
+export const addTask = params => {
+    return axios.post('/fastrunner/schedule/', params).then(res => res.data)
+};
+export const taskList = params => {
+    return axios.get('/fastrunner/schedule/', params).then(res => res.data)
+};
+export const getTaskPaginationBypage = params => {
+    return axios.get('/fastrunner/schedule/', params).then(res => res.data)
+};
+export const deleteTasks = url => {
+    return axios.delete('/fastrunner/schedule/' + url + '/').then(res => res.data)
+};
+
+//  主机配置
+export const addHostIP = params => {
+    return axios.post('/fastrunner/host_ip/', params).then(res => res.data)
+};
+
+export const hostList = params => {
+    return axios.get('/fastrunner/host_ip/', params).then(res => res.data)
+};
+
+export const updateHost = (url, params) => {
+    return axios.patch('/fastrunner/host_ip/' + url + '/', params).then(res => res.data)
+};
+
+export const deleteHost = url => {
+    return axios.delete('/fastrunner/host_ip/' + url + '/').then(res => res.data)
+};
+
+export const getHostPaginationBypage = params => {
+    return axios.get('/fastrunner/host_ip/', params).then(res => res.data)
+};
+
+export const getAllHost = url => {
+    return axios.get('/fastrunner/host_ip/' + url + '/').then(res => res.data)
 };

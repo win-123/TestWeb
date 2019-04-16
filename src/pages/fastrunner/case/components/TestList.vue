@@ -4,7 +4,7 @@
             <div style="overflow: hidden">
                 <el-row :gutter="50">
                     <el-col :span="6" v-if="testData.count > 11">
-                        <el-input placeholder="请输入用例集名称" clearable v-model="search">
+                        <el-input placeholder="请输入用例名称" clearable v-model="search">
                             <el-button slot="append" icon="el-icon-search" @click="getTestList"></el-button>
                         </el-input>
                     </el-col>
@@ -37,7 +37,7 @@
                     </el-dialog>
 
                     <el-dialog
-                        title="Run TestSuite"
+                        title="Run Case"
                         :visible.sync="dialogTreeVisible"
                         width="45%"
                         :modal-append-to-body="false"
@@ -103,6 +103,7 @@
                   </span>
                     </el-dialog>
                     <el-table
+                        highlight-current-row
                         v-loading="loading"
                         ref="multipleTable"
                         :data="testData.results"
@@ -120,7 +121,7 @@
                         </el-table-column>
 
                         <el-table-column
-                            label="用例集名称"
+                            label="用例名称"
                         >
                             <template slot-scope="scope">
                                 <div>{{scope.row.name}}</div>
@@ -132,6 +133,16 @@
                         >
                             <template slot-scope="scope">
                                 <div>{{scope.row.length}} 个</div>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column
+                            label="用例类型"
+                        >
+                            <template slot-scope="scope">
+                                <el-tag v-if="scope.row.tag==='冒烟用例'">{{scope.row.tag}}</el-tag>
+                                <el-tag v-if="scope.row.tag==='集成用例'" type="success">{{scope.row.tag}}</el-tag>
+                                <el-tag v-if="scope.row.tag==='监控脚本'" type="danger">{{scope.row.tag}}</el-tag>
                             </template>
                         </el-table-column>
 
@@ -192,18 +203,18 @@
 
 <script>
     import Report from '../../../reports/DebugReport'
-
     export default {
-
         name: "TestList",
         components: {
             Report
         },
-
         props: {
             run: Boolean,
             back: Boolean,
             project: {
+                require: true
+            },
+            host: {
                 require: true
             },
             node: {
@@ -211,12 +222,10 @@
             },
             del: Boolean
         },
-
         watch: {
             filterText(val) {
                 this.$refs.tree.filter(val);
             },
-
             run() {
                 this.asyncs = false;
                 this.reportName = "";
@@ -226,11 +235,9 @@
                 this.search = '';
                 this.getTestList();
             },
-
             back() {
                 this.getTestList();
             },
-
             del() {
                 if (this.selectTest.length !== 0) {
                     this.$confirm('此操作将永久删除测试用例集，是否继续?', '提示', {
@@ -272,7 +279,6 @@
                 currentPage: 1,
             }
         },
-
         methods: {
             getTree() {
                 this.$api.getTree(this.$route.params.id, {params: {type: 2}}).then(resp => {
@@ -280,12 +286,10 @@
                     this.dialogTreeVisible = true;
                 })
             },
-
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
-
             runTree() {
                 this.dialogTreeVisible = false;
                 const relation = this.$refs.tree.getCheckedKeys();
@@ -297,6 +301,7 @@
                     });
                 } else {
                     this.$api.runSuiteTree({
+                        "host":this.host,
                         "project": this.project,
                         "relation": relation,
                         "async": this.asyncs,
@@ -314,10 +319,9 @@
                     })
                 }
             },
-
             handleRunTest(id, name) {
                 this.loading = true;
-                this.$api.runTestByPk(id, {params: {project: this.project, name: name}}).then(resp => {
+                this.$api.runTestByPk(id, {params: {project: this.project, name: name,host:this.host}}).then(resp => {
                     this.summary = resp;
                     this.dialogTableVisible = true;
                     this.loading = false;
@@ -337,13 +341,11 @@
                     this.testData = resp;
                 })
             },
-
             handleEditTest(id) {
                 this.$api.editTest(id).then(resp => {
                     this.$emit('testStep', resp);
                 })
             },
-
             handleCopyTest(id) {
                 this.$prompt('请输入用例集名称', '提示', {
                     confirmButtonText: '确定',
@@ -363,11 +365,9 @@
                     })
                 })
             },
-
             handleSelectionChange(val) {
                 this.selectTest = val;
             },
-
             handleDelTest(id) {
                 this.$confirm('此操作将永久删除该测试用例集，是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -397,13 +397,12 @@
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             }
         },
         mounted() {
-           this.getTestList()
+            this.getTestList()
         }
     }
 </script>

@@ -1,7 +1,8 @@
 <template>
     <el-table
+        highlight-current-row
         strpe
-        height="460"
+        :height="height"
         :data="tableData"
         style="width: 100%;"
         @cell-mouse-enter="cellMouseEnter"
@@ -65,7 +66,11 @@
                 require: false
             }
         },
-
+        computed:{
+            height() {
+                return window.screen.height - 440
+            }
+        },
         watch: {
             save: function () {
                 this.$emit('extract', this.parseExtract(), this.tableData);
@@ -76,16 +81,13 @@
                 }
             }
         },
-
         methods: {
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             handleEdit(index, row) {
                 this.tableData.push({
                     key: '',
@@ -93,7 +95,6 @@
                     desc: ''
                 });
             },
-
             handleDelete(index, row) {
                 this.tableData.splice(index, 1);
             },
@@ -116,7 +117,6 @@
                 return extract;
             }
         },
-
         data() {
             return {
                 currentRow: '',

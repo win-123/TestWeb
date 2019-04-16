@@ -57,12 +57,11 @@
                         size="small"
                         icon="el-icon-edit-outline"
                         @click="renameNode"
-                    >节点重命名
+                    >重命名
                     </el-button>
 
 
                     <el-button
-                        style="margin-left: 100px"
                         :disabled="currentNode === '' "
                         type="primary"
                         size="small"
@@ -70,34 +69,21 @@
                         @click="initResponse = true"
                     >添加接口
                     </el-button>
-
-                    <el-button
-                        type="primary"
-                        plain
+                    &nbsp环境:
+                    <el-select
+                        placeholder="请选择"
                         size="small"
-                        icon="el-icon-upload"
-                        :disabled="currentNode === '' "
-                    >导入接口
-                    </el-button>
-                    <el-button
-                        type="info"
-                        plain
-                        size="small"
-                        icon="el-icon-download"
-                        :disabled="currentNode === '' "
-                    >导出接口
-                    </el-button>
-
-                    <el-tooltip
-                        class="item"
-                        effect="dark"
-                        content="可选配置"
-                        placement="top-start"
+                        tyle="margin-left: -6px"
+                        v-model="currentHost"
                     >
-                        <el-button plain size="small" icon="el-icon-view"></el-button>
-                    </el-tooltip>
-
-
+                        <el-option
+                            v-for="item in hostOptions"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.name">
+                        </el-option>
+                    </el-select>
+                    &nbsp配置:
                     <el-select
                         placeholder="请选择"
                         size="small"
@@ -112,14 +98,8 @@
                         </el-option>
                     </el-select>
 
-                    <el-checkbox
-                        v-model="checked"
-                        style="margin-left: 40px;"
-                        :disabled="currentNode === ''"
-                    >全选
-                    </el-checkbox>
-
                     <el-button
+                        v-if="!addAPIFlag"
                         style="margin-left: 20px"
                         type="primary"
                         icon="el-icon-caret-right"
@@ -130,11 +110,11 @@
 
 
                     <el-button
+                        v-if="!addAPIFlag"
                         type="danger"
                         icon="el-icon-delete"
                         circle
                         size="mini"
-                        :disabled="currentNode === ''"
                         @click="del = !del"
                     ></el-button>
 
@@ -187,16 +167,17 @@
                     :response="response"
                     v-on:addSuccess="handleAddSuccess"
                     :config="currentConfig"
+                    :host="currentHost"
                 >
                 </api-body>
 
                 <api-list
                     v-show="!addAPIFlag"
-                    :checked="checked"
                     v-on:api="handleAPI"
                     :node="currentNode !== '' ? currentNode.id : '' "
                     :project="$route.params.id"
                     :config="currentConfig"
+                    :host="currentHost"
                     :del="del"
                     :back="back"
                     :run="run"
@@ -212,7 +193,6 @@
 <script>
     import ApiBody from './components/ApiBody'
     import ApiList from './components/ApiList'
-
     export default {
         watch: {
             filterText(val) {
@@ -223,7 +203,6 @@
             ApiBody,
             ApiList
         },
-
         computed: {
             initResponse: {
                 get() {
@@ -237,7 +216,7 @@
                             name: '',
                             times: 1,
                             url: '',
-                            method: 'GET',
+                            method: 'POST',
                             header: [{
                                 key: "",
                                 value: "",
@@ -256,7 +235,7 @@
                                     desc: "",
                                     type: 1
                                 }],
-                                json_data: '{"key": "value"}'
+                                json_data: ''
                             },
                             validate: [{
                                 expect: "",
@@ -287,9 +266,10 @@
         data() {
             return {
                 configOptions: [],
+                hostOptions: [],
                 currentConfig: '请选择',
+                currentHost: '请选择',
                 back: false,
-                checked: false,
                 del: false,
                 run: false,
                 response: '',
@@ -322,12 +302,10 @@
                 this.back = !this.back;
                 this.addAPIFlag = false;
             },
-
             handleAPI(response) {
                 this.addAPIFlag = true;
                 this.response = response;
             },
-
             getTree() {
                 this.$api.getTree(this.$route.params.id, {params: {type: 1}}).then(resp => {
                     this.dataTree = resp['tree'];
@@ -339,6 +317,14 @@
                 this.$api.getAllConfig(this.$route.params.id).then(resp => {
                     this.configOptions = resp;
                     this.configOptions.push({
+                        name: '请选择'
+                    })
+                })
+            },
+            getHost() {
+                this.$api.getAllHost(this.$route.params.id).then(resp => {
+                    this.hostOptions = resp;
+                    this.hostOptions.push({
                         name: '请选择'
                     })
                 })
@@ -358,7 +344,6 @@
                     }
                 })
             },
-
             deleteNode() {
                 this.$confirm('此操作将永久删除该节点下所有接口, 是否继续?', '提示', {
                     confirmButtonText: '确定',
@@ -375,10 +360,8 @@
                             this.updateTree(true);
                         }
                     }
-
                 })
             },
-
             renameNode() {
                 this.$prompt('请输入节点名', '提示', {
                     confirmButtonText: '确定',
@@ -393,8 +376,6 @@
                     this.updateTree(false);
                 });
             },
-
-
             handleConfirm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
@@ -404,25 +385,21 @@
                     }
                 });
             },
-
             handleNodeClick(node, data) {
                 this.addAPIFlag = false;
                 this.currentNode = node;
                 this.data = data;
             },
-
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
-
             remove(data, node) {
                 const parent = node.parent;
                 const children = parent.data.children || parent.data;
                 const index = children.findIndex(d => d.id === data.id);
                 children.splice(index, 1);
             },
-
             append(data) {
                 const newChild = {id: ++this.maxId, label: this.nodeForm.name, children: []};
                 if (data === '' || this.dataTree.length === 0 || this.radio === '根节点') {
@@ -434,17 +411,16 @@
                 }
                 data.children.push(newChild);
             }
-
         },
         name: "RecordApi",
         mounted() {
             this.getTree();
             this.getConfig();
+            this.getHost();
         }
     }
 </script>
 
 <style scoped>
-
 
 </style>

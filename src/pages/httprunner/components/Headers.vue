@@ -1,8 +1,9 @@
 <template>
     <el-table
-        height="460"
+        highlight-current-row
         :data="tableData"
-        style="width: 100%;"
+        :height="height"
+        style='width: 100%;'
         :border="false"
         @cell-mouse-enter="cellMouseEnter"
         @cell-mouse-leave="cellMouseLeave"
@@ -65,7 +66,6 @@
 </template>
 
 <script>
-
     export default {
         props: {
             save: Boolean,
@@ -79,21 +79,17 @@
                 let results = queryString ? headerOptions.filter(this.createFilter(queryString)) : headerOptions;
                 cb(results);
             },
-
             createFilter(queryString) {
                 return (headerOptions) => {
                     return (headerOptions.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
             },
-
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             handleEdit(index, row) {
                 this.tableData.push({
                     key: '',
@@ -101,11 +97,9 @@
                     desc: ''
                 });
             },
-
             handleDelete(index, row) {
                 this.tableData.splice(index, 1);
             },
-
             // 头部信息格式化
             parseHeader() {
                 let header = {
@@ -125,11 +119,15 @@
             save: function () {
                 this.$emit('header', this.parseHeader(), this.tableData);
             },
-
             header: function () {
                 if (this.header.length !== 0) {
                     this.tableData = this.header;
                 }
+            }
+        },
+        computed:{
+            height() {
+                return window.screen.height - 440
             }
         },
         data() {
@@ -197,7 +195,6 @@
                 }, {
                     value: 'Warning'
                 }],
-
                 currentRow: '',
                 tableData: [{key: '', value: '', desc: ''}]
             }
@@ -207,4 +204,5 @@
 </script>
 
 <style scoped>
+
 </style>

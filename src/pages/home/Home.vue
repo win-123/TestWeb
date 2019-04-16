@@ -21,14 +21,12 @@
 <script>
     import HomeHeader from './components/Header'
     import HomeSide from './components/Side'
-
     export default {
         name: "Home",
         components: {
             HomeHeader,
             HomeSide
         }
-
     }
 </script>
 
@@ -36,5 +34,4 @@
     .el-main {
         padding: 0px;
     }
-
 </style>

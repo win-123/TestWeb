@@ -85,9 +85,9 @@
             >
                 <el-tab-pane label="Header" name="first">
                     <headers
-                            :save="save"
-                             v-on:header="handleHeader"
-                             :header="response ? response.body.header: [] ">
+                        :save="save"
+                        v-on:header="handleHeader"
+                        :header="response ? response.body.header: [] ">
                     </headers>
                 </el-tab-pane>
 
@@ -140,7 +140,7 @@
             </el-tabs>
 
         </div>
-        
+
 
     </div>
 
@@ -154,7 +154,6 @@
     import Variables from '../../../httprunner/components/Variables'
     import Hooks from '../../../httprunner/components/Hooks'
     import Report from '../../../reports/DebugReport'
-
     export default {
         components: {
             Headers,
@@ -164,10 +163,11 @@
             Variables,
             Hooks,
             Report
-
         },
-
         props: {
+            host: {
+                require: false
+            },
             nodeId: {
                 require: false
             },
@@ -186,7 +186,6 @@
                 this.save = !this.save;
                 this.run = true;
             },
-
             handleHeader(header) {
                 this.header = header;
             },
@@ -204,7 +203,6 @@
             },
             handleHooks(hooks) {
                 this.hooks = hooks;
-
                 if (!this.run) {
                     if (this.id === '') {
                         this.addAPI();
@@ -216,7 +214,6 @@
                     this.run = false;
                 }
             },
-
             validateData() {
                 if (this.url === '') {
                     this.$notify.error({
@@ -226,7 +223,6 @@
                     });
                     return false;
                 }
-
                 if (this.name === '') {
                     this.$notify.error({
                         title: 'name错误',
@@ -262,7 +258,6 @@
                     })
                 }
             },
-
             runAPI() {
                 if (this.validateData()) {
                     this.loading = true;
@@ -278,15 +273,17 @@
                         name: this.name,
                         times: this.times,
                         project: this.project,
-                        config: this.config
+                        config: this.config,
+                        host:this.host
                     }).then(resp => {
                         this.summary = resp;
                         this.dialogTableVisible = true;
                         this.loading = false;
+                    }).catch(resp => {
+                        this.loading = false;
                     })
                 }
             },
-
             addAPI() {
                 if (this.validateData()) {
                     this.$api.addAPI({
@@ -302,7 +299,6 @@
                         times: this.times,
                         nodeId: this.nodeId,
                         project: this.project,
-
                     }).then(resp => {
                         if (resp.success) {
                             this.$emit('addSuccess');
@@ -316,7 +312,6 @@
                 }
             }
         },
-
         watch: {
             response: function () {
                 this.name = this.response.body.name;
@@ -344,7 +339,7 @@
                 save: false,
                 run: false,
                 summary: {},
-                activeTag: 'first',
+                activeTag: 'second',
                 httpOptions: [{
                     label: 'GET',
                 }, {
@@ -371,6 +366,4 @@
         margin-top: 15px;
         border: 1px solid #ddd;
     }
-
-
 </style>

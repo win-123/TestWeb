@@ -1,8 +1,9 @@
 <template>
     <el-table
+        highlight-current-row
         :cell-style="{paddingTop: '4px', paddingBottom: '4px'}"
         strpe
-        height="460"
+        :height="height"
         :data="tableData"
         style="width: 100%;"
         @cell-mouse-enter="cellMouseEnter"
@@ -66,39 +67,37 @@
                 require: false
             }
         },
-
+        computed:{
+            height() {
+                return window.screen.height - 440
+            }
+        },
         watch: {
             save: function () {
                 this.$emit('hooks', this.parse_hooks(), this.tableData);
             },
-
             hooks: function () {
                 if (this.hooks.length !== 0) {
                     this.tableData = this.hooks;
                 }
             }
         },
-
         methods: {
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             handleEdit(index, row, flag) {
                 this.tableData.push({
                     setup: '',
                     teardown: ''
                 });
             },
-
             handleDelete(index, row) {
                 this.tableData.splice(index, 1);
             },
-
             parse_hooks() {
                 let hooks = {
                     setup_hooks: [],
@@ -129,4 +128,5 @@
 </script>
 
 <style scoped>
+
 </style>

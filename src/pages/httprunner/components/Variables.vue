@@ -1,9 +1,10 @@
 <template>
 
     <el-table
+        highlight-current-row
         :cell-style="{paddingTop: '4px', paddingBottom: '4px'}"
         strpe
-        height="460"
+        :height="height"
         :data="tableData"
         style="width: 100%;"
         @cell-mouse-enter="cellMouseEnter"
@@ -78,35 +79,34 @@
 <script>
     export default {
         name: "Variables",
-
         props: {
             save: Boolean,
             variables: {
                 require: false
             }
         },
-
+        computed:{
+            height() {
+                return window.screen.height - 440
+            }
+        },
         watch: {
             save: function () {
                 this.$emit('variables', this.parseVariables(), this.tableData);
             },
-
             variables: function () {
                 if (this.variables.length !== 0) {
                     this.tableData = this.variables;
                 }
             }
         },
-
         methods: {
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             handleEdit(index, row) {
                 this.tableData.push({
                     key: '',
@@ -115,11 +115,9 @@
                     desc: ''
                 });
             },
-
             handleDelete(index, row) {
                 this.tableData.splice(index, 1);
             },
-
             // 类型转换
             parseType(type, value) {
                 let tempValue;
@@ -167,19 +165,16 @@
                         }
                         break;
                 }
-
                 if (tempValue !== 0 && !tempValue && type !== 4 && type !== 1) {
                     this.$notify.error({
                         title: '类型转换错误',
                         message: msg,
-
                         duration: 2000
                     });
                     return 'exception'
                 }
                 return tempValue;
             },
-
             //变量格式化variables
             parseVariables() {
                 let variables = {
@@ -210,7 +205,6 @@
                     type: 1,
                     desc: ''
                 }],
-
                 dataTypeOptions: [{
                     label: 'String',
                     value: 1
@@ -230,7 +224,6 @@
                     label: 'Dict',
                     value: 6
                 }],
-
                 dataType: 'data'
             }
         }

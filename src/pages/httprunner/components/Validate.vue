@@ -1,8 +1,9 @@
 <template>
     <el-table
+        highlight-current-row
         :cell-style="{paddingTop: '4px', paddingBottom: '4px'}"
         strpe
-        height="460"
+        :height="height"
         :data="tableData"
         style="width: 100%;"
         @cell-mouse-enter="cellMouseEnter"
@@ -99,41 +100,38 @@
                 require: false
             }
         },
-
+        computed:{
+            height() {
+                return window.screen.height - 440
+            }
+        },
         watch: {
             save: function () {
                 this.$emit('validate', this.parseValidate(), this.tableData);
-
             },
-
             validate: function () {
                 if (this.validate.length !== 0) {
                     this.tableData = this.validate;
                 }
             }
         },
-
         methods: {
             querySearch(queryString, cb) {
                 let validateOptions = this.validateOptions;
                 let results = queryString ? validateOptions.filter(this.createFilter(queryString)) : validateOptions;
                 cb(results);
             },
-
             createFilter(queryString) {
                 return (validateOptions) => {
                     return (validateOptions.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
                 };
             },
-
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             handleEdit(index, row) {
                 this.tableData.push({
                     expect: '',
@@ -142,11 +140,9 @@
                     type: 1
                 });
             },
-
             handleDelete(index, row) {
                 this.tableData.splice(index, 1);
             },
-
             // 类型转换
             parseType(type, value) {
                 let tempValue;
@@ -193,9 +189,7 @@
                             tempValue = false
                         }
                         break;
-
                 }
-
                 if (tempValue !== 0 && !tempValue && type !== 4 && type !== 1) {
                     this.$notify.error({
                         title: '类型转换错误',
@@ -206,7 +200,6 @@
                 }
                 return tempValue;
             },
-
             parseValidate() {
                 let validate = {
                     validate: []
@@ -235,7 +228,6 @@
                     comparator: 'equals',
                     type: 1
                 }],
-
                 dataTypeOptions: [{
                     label: 'String',
                     value: 1
@@ -255,7 +247,6 @@
                     label: 'Dict',
                     value: 6
                 }],
-
                 validateOptions: [{
                     value: 'equals'
                 }, {
@@ -300,4 +291,5 @@
 </script>
 
 <style scoped>
+
 </style>

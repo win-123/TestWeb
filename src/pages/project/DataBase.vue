@@ -291,7 +291,6 @@
                         this.dialogVisible = false;
                         this.editVisible = false;
                         let obj;
-
                         if (this.dataBaseForm.id === '') {
                             obj = this.$api.addDataBase(this.dataBaseForm);
                         } else {
@@ -302,7 +301,6 @@
                                 this.success(resp["name"] + '数据库操作成功');
                                 this.getDataBaseList();
                             }
-
                             this.dataBaseForm.name = '';
                             this.dataBaseForm.desc = '';
                             this.dataBaseForm.id = '';
@@ -322,7 +320,6 @@
                         return false;
                     }
                 });
-
             },
             success(resp) {
                 this.$notify({

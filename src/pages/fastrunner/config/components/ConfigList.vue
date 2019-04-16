@@ -28,6 +28,7 @@
             <el-main style="padding: 0; margin-left: 10px; margin-top: 10px;">
                 <div style="position: fixed; bottom: 0; right:0; left: 220px; top: 150px">
                     <el-table
+                        highlight-current-row
                         :data="configData.results"
                         :show-header="configData.results.length !== 0 "
                         stripe
@@ -53,7 +54,7 @@
 
                         <el-table-column
 
-                            label="配置请求地址"
+                            label="基本请求地址"
                         >
                             <template slot-scope="scope">
                                 <div v-text="scope.row.base_url === '' ? '无' : scope.row.base_url"></div>
@@ -136,7 +137,6 @@
             back() {
                 this.getConfigList();
             },
-
             del() {
                 if (this.selectConfig.length !== 0) {
                     this.$confirm('此操作将永久删除配置，是否继续?', '提示', {
@@ -157,12 +157,10 @@
                 }
             }
         },
-
         methods: {
             handleSelectionChange(val) {
                 this.selectConfig = val;
             },
-
             handleCurrentChange(val) {
                 this.$api.getConfigPaginationBypage({
                     params: {
@@ -174,7 +172,6 @@
                     this.configData = resp;
                 })
             },
-
             //删除api
             handleDelConfig(index) {
                 this.$confirm('此操作将永久删除该配置，是否继续?', '提示', {
@@ -191,11 +188,9 @@
                     })
                 })
             },
-
             handleEditConfig(row) {
                 this.$emit('respConfig', row);
             },
-
             handleCopyConfig(id) {
                 this.$prompt('请输入配置名称', '提示', {
                     confirmButtonText: '确定',
@@ -213,15 +208,12 @@
                     })
                 })
             },
-
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             getConfigList() {
                 this.$api.configList({
                     params: {
@@ -240,6 +232,5 @@
 </script>
 
 <style scoped>
-
 
 </style>

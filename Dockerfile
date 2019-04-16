@@ -1,6 +1,6 @@
 FROM hub.c.163.com/library/nginx
 
-MAINTAINER dreamyin
+MAINTAINER jack
 
 RUN rm /etc/nginx/conf.d/default.conf
 

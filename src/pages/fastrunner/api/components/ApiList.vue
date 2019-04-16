@@ -3,6 +3,15 @@
         <el-header style="padding: 0; height: 50px;">
             <div style=" padding-left: 10px;">
                 <el-row :gutter="50">
+                    <el-col :span="1">
+                        <el-checkbox
+                            v-if="apiData.count > 0"
+                            v-model="checked"
+                            style="padding-top: 14px; padding-left: 2px"
+                        >
+                        </el-checkbox>
+                    </el-col>
+
                     <el-col :span="6" v-if="apiData.count > 11">
                         <el-input placeholder="请输入接口名称" clearable v-model="search">
                             <el-button slot="append" icon="el-icon-search" @click="getAPIList"></el-button>
@@ -106,6 +115,7 @@
 
                 <div style="position: fixed; bottom: 0; right:0; left: 500px; top: 160px">
                     <el-table
+                        highlight-current-row
                         height="calc(100%)"
                         ref="multipleTable"
                         :data="apiData.results"
@@ -218,13 +228,15 @@
 
 <script>
     import Report from '../../../reports/DebugReport'
-
     export default {
         components: {
             Report
         },
         name: "ApiList",
         props: {
+            host: {
+                require: true
+            },
             config: {
                 require: true
             },
@@ -236,11 +248,11 @@
             project: {
                 require: true
             },
-            checked: Boolean,
             del: Boolean
         },
         data() {
             return {
+                checked:false,
                 search: '',
                 reportName: '',
                 asyncs: false,
@@ -264,7 +276,6 @@
             filterText(val) {
                 this.$refs.tree.filter(val);
             },
-
             run() {
                 this.asyncs = false;
                 this.reportName = "";
@@ -284,7 +295,6 @@
                     this.toggleClear();
                 }
             },
-
             del() {
                 if (this.selectAPI.length !== 0) {
                     this.$confirm('此操作将永久删除API，是否继续?', '提示', {
@@ -305,7 +315,6 @@
                 }
             }
         },
-
         methods: {
             handleCopyAPI(id) {
                 this.$prompt('请输入接口名称', '提示', {
@@ -328,7 +337,6 @@
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
-
             runTree() {
                 this.dialogTreeVisible = false;
                 const relation = this.$refs.tree.getCheckedKeys();
@@ -340,6 +348,7 @@
                     });
                 } else {
                     this.$api.runAPITree({
+                        "host": this.host,
                         "project": this.project,
                         "relation": relation,
                         "async": this.asyncs,
@@ -355,7 +364,6 @@
                             this.summary = resp;
                             this.dialogTableVisible = true;
                         }
-
                     })
                 }
             },
@@ -365,15 +373,12 @@
                     this.dialogTreeVisible = true;
                 })
             },
-
             handleSelectionChange(val) {
                 this.selectAPI = val;
             },
-
             toggleAll() {
                 this.$refs.multipleTable.toggleAllSelection();
             },
-
             toggleClear() {
                 this.$refs.multipleTable.clearSelection();
             },
@@ -389,8 +394,6 @@
                     this.apiData = res;
                 })
             },
-
-
             handleCurrentChange(val) {
                 this.$api.getPaginationBypage({
                     params: {
@@ -403,7 +406,6 @@
                     this.apiData = res;
                 })
             },
-
             //删除api
             handleDelApi(index) {
                 this.$confirm('此操作将永久删除该API，是否继续?', '提示', {
@@ -420,7 +422,6 @@
                     })
                 })
             },
-
             // 编辑API
             handleRowClick(row) {
                 this.$api.getAPISingle(row.id).then(resp => {
@@ -436,6 +437,7 @@
                 this.loading = true;
                 this.$api.runAPIByPk(id, {
                     params: {
+                        host:this.host,
                         config: this.config
                     }
                 }).then(resp => {
@@ -446,11 +448,9 @@
                     this.loading = false;
                 })
             },
-
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             }
@@ -462,6 +462,5 @@
 </script>
 
 <style scoped>
-
 
 </style>

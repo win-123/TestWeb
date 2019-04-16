@@ -201,10 +201,9 @@
                 }
                 return request
             },
-
             handleContent(content) {
                 try {
-                     content = JSON.parse(content)
+                    content = JSON.parse(content)
                 } catch (e) {
                 }
                 return content

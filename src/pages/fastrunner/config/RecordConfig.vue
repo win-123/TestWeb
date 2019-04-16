@@ -12,21 +12,20 @@
                     >新增配置
                     </el-button>
 
-                    <el-button
-                        type="primary"
-                        plain
-                        size="small"
-                        icon="el-icon-upload"
-                    >导入配置
-                    </el-button>
-
-                    <el-button
-                        type="info"
-                        plain
-                        size="small"
-                        icon="el-icon-download"
-                    >导出配置
-                    </el-button>
+                    <!--  <el-button
+                          type="primary"
+                          plain
+                          size="small"
+                          icon="el-icon-upload"
+                      >导入配置
+                      </el-button>
+                      <el-button
+                          type="info"
+                          plain
+                          size="small"
+                          icon="el-icon-download"
+                      >导出配置
+                      </el-button>-->
 
                     <el-button
                         style="margin-left: 20px"
@@ -75,13 +74,11 @@
 <script>
     import ConfigBody from './components/ConfigBody'
     import ConfigList from './components/ConfigList'
-
     export default {
         components: {
             ConfigBody,
             ConfigList
         },
-
         computed: {
             initResponse: {
                 get() {
@@ -129,7 +126,6 @@
                                 value: "",
                                 desc: "",
                             }],
-
                         }
                     };
                 }
@@ -148,7 +144,6 @@
                 this.back = !this.back;
                 this.addConfigActivate = false;
             },
-
             handleRespConfig(row) {
                 this.respConfig = row;
                 this.addConfigActivate = true;
@@ -156,12 +151,10 @@
         },
         name: "RecordConfig",
         mounted() {
-
         }
     }
 </script>
 
-<style>
-
+<style scoped>
 
 </style>

@@ -46,18 +46,28 @@
                             :current-page.sync="currentPage"
                             layout="total, prev, pager, next, jumper"
                             :total="apiData.count"
-                            style="margin-top: 8px; text-align: center"
+                            style="margin-top: 5px; text-align: center"
                         >
                         </el-pagination>
                     </el-col>
                     <el-col :span="12">
                         <el-input
                             style="width: 540px; text-align: center"
-                            placeholder="请输入测试用例集名称"
+                            placeholder="请输入测试用例名称"
                             v-model="testName"
                             clearable
+                            v-if="testData.length > 0"
                         >
-                            <template slot="prepend">信息录入</template>
+                            <el-select v-model="testTag" slot="prepend" placeholder="请选择" style="width: 105px">
+
+                                <el-option
+                                    v-for="value in tagOptions" :key="value"
+                                    :label="value"
+                                    :value="value"
+                                ></el-option>
+
+                            </el-select>
+
                             <el-button
                                 slot="append"
                                 type="success"
@@ -66,27 +76,26 @@
                             >Save
                             </el-button>
 
-                            <el-button
-                                slot="append"
-                                type="primary"
-                                plain
-                                v-loading="suite_loading"
-                                @click="handleClickRun"
-                            >Run
-                            </el-button>
                         </el-input>
+
+                        <el-button
+                            type="primary"
+                            v-loading="suite_loading"
+                            @click="handleClickRun"
+                        >Send
+                        </el-button>
                     </el-col>
                 </el-row>
             </div>
 
-            <div v-show="!editTestStepActivate" style="margin-top: 10px;">
+            <div v-show="!editTestStepActivate" style="margin-top: 10px; ">
                 <el-row :gutter="20">
                     <el-col :span="12">
                         <div
                             v-for="(item,index) in apiData.results"
                             draggable='true'
                             @dragstart="currentAPI = JSON.parse(JSON.stringify(item))"
-                            style="cursor: pointer; margin-top: 10px; overflow: auto"
+                            style="cursor: pointer; margin-top: 10px; overflow: auto;"
                             :key="index"
 
                         >
@@ -151,6 +160,11 @@
                              @dragover='allowDrop($event)'
                         >
                             <div class='test-list'>
+                                <span
+                                    v-if="testData.length ===0"
+                                    style="color: red">温馨提示：<br/>选择左侧相应API节点显示可拖拽的API<br/>从左边拖拽API至此区域组成业务用例<br/>
+                                    上下拖动此区域接口调整接口调用顺序
+                                </span>
                                 <div
                                     v-if="isConfigExist"
                                     class="block block_test"
@@ -183,7 +197,7 @@
                                         v-if="test.body.method !== 'config'"
                                     >
                                         <span
-                                            class="block-method block_method_test block_method_color">{{test.body.method}}</span>
+                                            class="block-method block_method_test block_method_color">A P I</span>
                                         <input class="block-test-name"
                                                v-model="test.body.name"
                                         />
@@ -227,6 +241,7 @@
             </div>
 
             <http-runner
+                :host="host"
                 v-if="editTestStepActivate"
                 :response="testData[currentTest]"
                 :config="config"
@@ -245,7 +260,6 @@
     import draggable from 'vuedraggable'
     import HttpRunner from './TestBody'
     import Report from '../../../reports/DebugReport'
-
     export default {
         components: {
             draggable,
@@ -255,7 +269,7 @@
         computed: {
             isConfigExist: {
                 get() {
-                    if (this.testData.length > 0 && this.testData[0].body.method === "config") {
+                    if (this.testData.length > 0 && this.testData[0].body.method === "config" && this.testData[0].body.name !== '请选择') {
                         return true;
                     }
                     return false;
@@ -263,6 +277,9 @@
             }
         },
         props: {
+            host: {
+                require: true
+            },
             config: {
                 require: true
             },
@@ -277,40 +294,46 @@
             },
             back: Boolean
         },
-
         name: "EditTest",
         watch: {
             config() {
                 const temp = {body: {name: this.config, method: 'config'}};
-                if (this.testData.length === 0 || this.testData[0].body.method !== 'config') {
+                if ((this.testData.length === 0 || this.testData[0].body.method !== 'config') && this.config !== '请选择') {
                     this.testData.splice(0, 0, temp)
                 } else {
-                    this.testData.splice(0, 1, temp)
+                    if (this.config !== '请选择') {
+                        this.testData.splice(0, 1, temp)
+                    }
                 }
-
             },
             back() {
                 this.editTestStepActivate = false;
             },
-
             filterText(val) {
                 this.$refs.tree2.filter(val);
             },
             testStepResp() {
-                if (this.testStepResp.length !== 0) {
-                    this.testName = this.testStepResp[0].case.name;
-                    this.testId = this.testStepResp[0].case.id;
-                } else {
+                try {
+                    this.testName = this.testStepResp.case.name;
+                    this.testId = this.testStepResp.case.id;
+                    this.testTag = this.testStepResp.case.tag;
+                    this.relation = this.testStepResp.case.relation;
+                    this.testData = JSON.parse(JSON.stringify(this.testStepResp.step))
+                } catch (e) {
                     this.testName = '';
                     this.testId = '';
+                    this.testTag = '集成用例';
+                    this.testData = JSON.parse(JSON.stringify(this.testStepResp))
                 }
-
-                this.testData = JSON.parse(JSON.stringify(this.testStepResp))
             }
         },
-
         data() {
             return {
+                tagOptions: {
+                    1: '冒烟用例',
+                    2: '集成用例',
+                    3: '监控脚本'
+                },
                 suite_loading: false,
                 loading: false,
                 dialogTableVisible: false,
@@ -319,6 +342,8 @@
                 length: 0,
                 testId: '',
                 testName: '',
+                relation: '',
+                testTag: '集成用例',
                 currentTest: '',
                 currentNode: '',
                 currentAPI: '',
@@ -331,12 +356,10 @@
                     count: 0,
                     results: []
                 },
-
                 testData: []
             }
         },
         methods: {
-
             handleNewBody(body, newBody) {
                 this.editTestStepActivate = false;
                 const step = this.testData[this.currentTest].case;
@@ -348,7 +371,6 @@
                     id: id
                 };
             },
-
             validateData() {
                 if (this.testName === '' || this.testName.length > 100) {
                     this.$notify.warning({
@@ -358,7 +380,6 @@
                     });
                     return false
                 }
-
                 if (this.testData.length === 0) {
                     this.$notify.warning({
                         title: '提示',
@@ -367,7 +388,6 @@
                     });
                     return false
                 }
-
                 if (this.testData[0].body.method === "config" && this.testData.length === 1) {
                     this.$notify.warning({
                         title: '提示',
@@ -376,14 +396,10 @@
                     });
                     return false
                 }
-
-
                 return true;
             },
-
             addTestSuite() {
                 var length = this.testData.length;
-
                 if (this.testData[0].body.method === "config") {
                     length -= 1;
                 }
@@ -392,7 +408,8 @@
                     project: this.project,
                     relation: this.node,
                     name: this.testName,
-                    body: this.testData
+                    body: this.testData,
+                    tag: this.testTag
                 }).then(resp => {
                     if (resp.success) {
                         this.$emit("addSuccess");
@@ -405,7 +422,6 @@
                     }
                 })
             },
-
             updateTestSuite() {
                 var length = this.testData.length;
                 if (this.testData[0].body.method === "config") {
@@ -414,7 +430,10 @@
                 this.$api.updateTestCase(this.testId, {
                     length: length,
                     name: this.testName,
-                    body: this.testData
+                    tag: this.testTag,
+                    body: this.testData,
+                    project: this.project,
+                    relation: this.relation
                 }).then(resp => {
                     if (resp.success) {
                         this.$emit("addSuccess");
@@ -427,7 +446,6 @@
                     }
                 })
             },
-
             handleClickSave() {
                 if (this.validateData()) {
                     if (this.testId === '') {
@@ -437,11 +455,11 @@
                     }
                 }
             },
-
             handleClickRun() {
                 if (this.validateData()) {
                     this.suite_loading = true;
                     this.$api.runSingleTestSuite({
+                        host: this.host,
                         name: this.testName,
                         body: this.testData,
                         project: this.project
@@ -454,7 +472,6 @@
                     })
                 }
             },
-
             handleSingleRun() {
                 this.loading = true;
                 var config = null;
@@ -462,6 +479,7 @@
                     config = this.testData[0].body;
                 }
                 this.$api.runSingleTest({
+                    host: this.host,
                     config: config,
                     body: this.testData[this.currentTest],
                     project: this.project
@@ -473,24 +491,11 @@
                     this.loading = false;
                 })
             },
-
             handlePageChange(val) {
                 this.$api.getPaginationBypage({
                     params: {
                         page: this.currentPage,
-                        node: this.currentNode.id,
-                        project: this.project,
-                        search: ""
-                    }
-                }).then(res => {
-                    this.apiData = res;
-                })
-            },
-
-            getAPIList() {
-                this.$api.apiList({
-                    params: {
-                        node: this.currentNode.id,
+                        node: this.currentNode,
                         project: this.project,
                         search: ''
                     }
@@ -498,7 +503,17 @@
                     this.apiData = res;
                 })
             },
-
+            getAPIList() {
+                this.$api.apiList({
+                    params: {
+                        node: this.currentNode,
+                        project: this.project,
+                        search: ''
+                    }
+                }).then(res => {
+                    this.apiData = res;
+                })
+            },
             getTree() {
                 this.$api.getTree(this.$route.params.id, {
                     params: {
@@ -508,25 +523,20 @@
                     this.dataTree = resp['tree'];
                 })
             },
-
             handleNodeClick(node, data) {
-                this.currentNode = node;
+                this.currentNode = node.id;
                 this.data = data;
                 this.getAPIList();
-
             },
-
             filterNode(value, data) {
                 if (!value) return true;
                 return data.label.indexOf(value) !== -1;
             },
-
             dragEnd(event) {
                 if (this.testData.length > this.length) {
                     this.testData.splice(this.length, 1)
                 }
             },
-
             drop(event) {
                 event.preventDefault();
                 this.testData.push(this.currentAPI);
@@ -534,34 +544,29 @@
             allowDrop(event) {
                 event.preventDefault();
             },
-
         },
         mounted() {
             this.getTree();
+            this.getAPIList();
         }
     }
 </script>
 
 <style scoped>
-
     .test-list {
         height: 590px;
     }
-
     .block_test {
         margin-top: 10px;
         border: 1px solid #49cc90;
         background-color: rgba(236, 248, 238, .4)
     }
-
     .block_method_test {
-        background-color: #909399;
+        background-color: darkcyan;
     }
-
     .block_method_config {
         background-color: red;
     }
-
     .block-test-name {
         width: 350px;
         padding-left: 10px;
@@ -572,8 +577,6 @@
         border: none;
         outline: none;
         background: rgba(236, 248, 238, .4)
-
     }
-
 
 </style>

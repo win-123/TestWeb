@@ -91,7 +91,6 @@
     import Variables from '../../../httprunner/components/Variables'
     import Hooks from '../../../httprunner/components/Hooks'
     import Parameters from '../../../httprunner/components/Parameters'
-
     export default {
         components: {
             Headers,
@@ -100,7 +99,6 @@
             Hooks,
             Parameters
         },
-
         props: {
             project: {
                 require: false
@@ -109,7 +107,6 @@
                 require: false
             }
         },
-
         watch: {
             response: function () {
                 this.name = this.response.body.name;
@@ -117,7 +114,6 @@
                 this.id = this.response.id;
             }
         },
-
         methods: {
             handleHeader(header) {
                 this.header = header;
@@ -125,7 +121,6 @@
             handleRequest(request) {
                 this.request = request;
             },
-
             handleVariables(variables) {
                 this.variables = variables;
             },
@@ -140,7 +135,6 @@
                     this.updateConfig();
                 }
             },
-
             addConfig() {
                 if (this.validateData()) {
                     this.$api.addConfig({
@@ -152,7 +146,6 @@
                         base_url: this.baseUrl,
                         name: this.name,
                         project: this.project,
-
                     }).then(resp => {
                         if (resp.success) {
                             this.$emit("addSuccess");
@@ -165,7 +158,6 @@
                     })
                 }
             },
-
             updateConfig() {
                 if (this.validateData()) {
                     this.$api.updateConfig(this.id, {
@@ -188,7 +180,6 @@
                     })
                 }
             },
-
             validateData() {
                 if (this.name === '') {
                     this.$notify.error({
@@ -200,9 +191,7 @@
                 }
                 return true
             },
-
         },
-
         data() {
             return {
                 name: '',
@@ -214,7 +203,7 @@
                 hooks: [],
                 parameters: [],
                 save: false,
-                activeTag: 'first',
+                activeTag: 'third',
             }
         },
         name: "ConfigBody"
@@ -225,15 +214,12 @@
     .el-select {
         width: 130px;
     }
-
     .input-with-select {
         width: 600px;
         margin-top: 10px;
     }
-
     .request {
         margin-top: 15px;
         border: 1px solid #ddd;
     }
-
 </style>

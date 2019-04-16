@@ -12,9 +12,10 @@
         </div>
         <div style="margin-top: 5px">
             <el-table
+                highlight-current-row
                 :cell-style="{paddingTop: '4px', paddingBottom: '4px'}"
                 strpe
-                height="436"
+                :height="height"
                 :data="dataType === 'data' ? formData: paramsData"
                 style="width: 100%;"
                 @cell-mouse-enter="cellMouseEnter"
@@ -130,7 +131,7 @@
                     lang="json"
                     theme="github"
                     width="100%"
-                    height="400"
+                    :height="height"
                     v-show="dataType === 'json' "
             >
             </editor>
@@ -150,13 +151,15 @@
                 require: false
             }
         },
-
+        computed:{
+            height() {
+                return window.screen.height - 464
+            }
+        },
         name: "Request",
         components: {
             editor: require('vue2-ace-editor'),
         },
-
-
         watch: {
             save: function () {
                 this.$emit('request', {
@@ -170,7 +173,6 @@
                     json_data: this.jsonData
                 });
             },
-
             request: function () {
                 if (this.request.length !== 0) {
                     this.formData = this.request.data;
@@ -179,7 +181,6 @@
                 }
             }
         },
-
         methods: {
             editorInit() {
                 require('brace/ext/language_tools');
@@ -187,7 +188,6 @@
                 require('brace/theme/github');
                 require('brace/snippets/json');
             },
-
             uploadSuccess(response, file, fileList) {
                 let size = file.size;
                 if (size >= 1048576) {
@@ -203,13 +203,10 @@
                 if (!response.success) {
                     this.$message.error(file.name + response.msg);
                 }
-
             },
-
             uploadFile(row) {
                 return this.$api.uploadFile();
             },
-
             uploadError(error) {
                 if (error.status === 401) {
                     this.$router.replace({
@@ -219,15 +216,12 @@
                     this.$message.error('Sorry，文件上传失败啦, 请重试！')
                 }
             },
-
             cellMouseEnter(row) {
                 this.currentRow = row;
             },
-
             cellMouseLeave(row) {
                 this.currentRow = '';
             },
-
             handleEdit(index, row) {
                 const data = this.dataType === 'data' ? this.formData : this.paramsData;
                 data.push({
@@ -237,19 +231,16 @@
                     desc: ''
                 });
             },
-
             handleDelete(index, row) {
                 const data = this.dataType === 'data' ? this.formData : this.paramsData;
                 data.splice(index, 1);
             },
-
             // 文件格式化
             parseFile() {
                 let files = {
                     files: {},
                     desc: {}
                 };
-
                 for (let content of this.formData) {
                     // 是文件
                     if (content['key'] !== '' && content['type'] === 5) {
@@ -259,7 +250,6 @@
                 }
                 return files
             },
-
             // 表单格式化
             parseForm() {
                 let form = {
@@ -270,18 +260,15 @@
                     // file 不处理
                     if (content['key'] !== '' && content['type'] !== 5) {
                         const value = this.parseType(content['type'], content['value']);
-
                         if (value === 'exception') {
                             continue;
                         }
-
                         form.data[content['key']] = value;
                         form.desc[content['key']] = content['desc'];
                     }
                 }
                 return form;
             },
-
             parseParams() {
                 let params = {
                     params: {},
@@ -295,7 +282,6 @@
                 }
                 return params;
             },
-
             parseJson() {
                 let json = {};
                 if (this.jsonData !== '') {
@@ -312,7 +298,6 @@
                 }
                 return json;
             },
-
             // 类型转换
             parseType(type, value) {
                 let tempValue;
@@ -344,7 +329,6 @@
                         }
                         break;
                 }
-
                 if (tempValue !== 0 && !tempValue && type !== 4 && type !== 1) {
                     this.$notify.error({
                         title: '类型转换错误',
@@ -353,11 +337,9 @@
                     });
                     return 'exception'
                 }
-
                 return tempValue;
             }
         },
-
         data() {
             return {
                 fileList: [],
@@ -376,7 +358,6 @@
                     type: '',
                     desc: ''
                 }],
-
                 dataTypeOptions: [{
                     label: 'String',
                     value: 1
@@ -393,7 +374,6 @@
                     label: 'File',
                     value: 5
                 }],
-
                 dataOptions: [{
                     label: 'data',
                     value: '表单',
@@ -404,7 +384,7 @@
                     label: 'params',
                     value: 'params'
                 }],
-                dataType: 'data'
+                dataType: 'json'
             }
         }
     }
@@ -419,5 +399,4 @@
         text-align: left;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     }
-
 </style>
