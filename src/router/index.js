@@ -4,7 +4,6 @@ import Home from '@/pages/home/Home'
 import Register from '@/pages/auth/components/Register'
 import Login from '@/pages/auth/components/Login'
 import ProjectList from '@/pages/project/ProjectList'
-import DataBase from '@/pages/project/DataBase'
 import ProjectDetail from '@/pages/project/ProjectDetail'
 import DebugTalk from '@/pages/httprunner/DebugTalk'
 import RecordApi from '@/pages/fastrunner/api/RecordApi'
@@ -13,6 +12,7 @@ import GlobalEnv from '@/pages/variables/GlobalEnv'
 import ReportList from '@/pages/reports/ReportList'
 import RecordConfig from '@/pages/fastrunner/config/RecordConfig'
 import Tasks from '@/pages/task/Tasks'
+import HostAddress from '@/pages/variables/HostAddress'
 
 Vue.use(Router)
 
@@ -105,7 +105,7 @@ export default new Router({
                     path: 'record_config/:id',
                     component: RecordConfig,
                     meta: {
-                        title: '环境管理',
+                        title: '配置管理',
                         requireAuth: true
                     }
 
@@ -151,11 +151,11 @@ export default new Router({
 
                 },
                 {
-                    name: 'DataBase',
-                    path: 'database',
-                    component: DataBase,
+                    name: 'HostIP',
+                    path: 'host_ip/:id',
+                    component: HostAddress,
                     meta: {
-                        title: '数据库管理',
+                        title: 'HOST配置',
                         requireAuth: true
                     }
 
