@@ -145,6 +145,54 @@
 
 <script>
     export default {
+        data() {
+            return {
+                fileList: [],
+                currentIndex: 0,
+                currentRow: '',
+                baseUrl: '',
+                jsonData: '',
+                formData: [{
+                    key: '',
+                    value: '',
+                    type: 1,
+                    desc: ''
+                }],
+                paramsData: [{
+                    key: '',
+                    value: '',
+                    type: '',
+                    desc: ''
+                }],
+                dataTypeOptions: [{
+                    label: 'String',
+                    value: 1
+                }, {
+                    label: 'Integer',
+                    value: 2
+                }, {
+                    label: 'Float',
+                    value: 3
+                }, {
+                    label: 'Boolean',
+                    value: 4
+                }, {
+                    label: 'File',
+                    value: 5
+                }],
+                dataOptions: [{
+                    label: 'data',
+                    value: '表单',
+                }, {
+                    label: 'json',
+                    value: 'json',
+                }, {
+                    label: 'params',
+                    value: 'params'
+                }],
+                dataType: 'json'
+            }
+        },
         props: {
             save: Boolean,
             request: {
@@ -340,53 +388,6 @@
                 return tempValue;
             }
         },
-        data() {
-            return {
-                fileList: [],
-                currentIndex: 0,
-                currentRow: '',
-                jsonData: '',
-                formData: [{
-                    key: '',
-                    value: '',
-                    type: 1,
-                    desc: ''
-                }],
-                paramsData: [{
-                    key: '',
-                    value: '',
-                    type: '',
-                    desc: ''
-                }],
-                dataTypeOptions: [{
-                    label: 'String',
-                    value: 1
-                }, {
-                    label: 'Integer',
-                    value: 2
-                }, {
-                    label: 'Float',
-                    value: 3
-                }, {
-                    label: 'Boolean',
-                    value: 4
-                }, {
-                    label: 'File',
-                    value: 5
-                }],
-                dataOptions: [{
-                    label: 'data',
-                    value: '表单',
-                }, {
-                    label: 'json',
-                    value: 'json',
-                }, {
-                    label: 'params',
-                    value: 'params'
-                }],
-                dataType: 'json'
-            }
-        }
     }
 </script>
 

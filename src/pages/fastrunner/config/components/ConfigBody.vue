@@ -92,12 +92,27 @@
     import Hooks from '../../../httprunner/components/Hooks'
     import Parameters from '../../../httprunner/components/Parameters'
     export default {
+        name: "ConfigBody",
         components: {
             Headers,
             Request,
             Variables,
             Hooks,
             Parameters
+        },
+        data() {
+            return {
+                name: '',
+                baseUrl: '',
+                id: '',
+                header: [],
+                request: [],
+                variables: [],
+                hooks: [],
+                parameters: [],
+                save: false,
+                activeTag: 'third',
+            }
         },
         props: {
             project: {
@@ -192,21 +207,6 @@
                 return true
             },
         },
-        data() {
-            return {
-                name: '',
-                baseUrl: '',
-                id: '',
-                header: [],
-                request: [],
-                variables: [],
-                hooks: [],
-                parameters: [],
-                save: false,
-                activeTag: 'third',
-            }
-        },
-        name: "ConfigBody"
     }
 </script>
 

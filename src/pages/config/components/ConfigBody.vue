@@ -93,6 +93,11 @@
     import Parameters from '../../../httprunner/components/Parameters'
 
     export default {
+        data() {
+            return {
+                baseUrl: "",
+            }
+        },
         components: {
             Headers,
             Request,

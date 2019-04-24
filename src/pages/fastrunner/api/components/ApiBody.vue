@@ -155,6 +155,45 @@
     import Hooks from '../../../httprunner/components/Hooks'
     import Report from '../../../reports/DebugReport'
     export default {
+        name: "ApiBody",
+        data() {
+            return {
+                loading: false,
+                times: 1,
+                name: '',
+                url: '',
+                id: '',
+                baseUrl: '',
+                header: [],
+                request: [],
+                extract: [],
+                validate: [],
+                variables: [],
+                hooks: [],
+                method: 'GET',
+                dialogTableVisible: false,
+                save: false,
+                run: false,
+                summary: {},
+                activeTag: 'second',
+                httpOptions: [{
+                    label: 'GET',
+                }, {
+                    label: 'POST',
+                }, {
+                    label: 'PUT',
+                }, {
+                    label: 'DELETE',
+                }, {
+                    label: 'HEAD',
+                }, {
+                    label: 'OPTIONS',
+                }, {
+                    label: 'PATCH',
+                }],
+            }
+        },
+
         components: {
             Headers,
             Request,
@@ -163,6 +202,15 @@
             Variables,
             Hooks,
             Report
+        },
+        watch: {
+            response: function () {
+                this.name = this.response.body.name;
+                this.method = this.response.body.method;
+                this.url = this.response.body.url;
+                this.times = this.response.body.times;
+                this.id = this.response.id;
+            }
         },
         props: {
             host: {
@@ -312,52 +360,6 @@
                 }
             }
         },
-        watch: {
-            response: function () {
-                this.name = this.response.body.name;
-                this.method = this.response.body.method;
-                this.url = this.response.body.url;
-                this.times = this.response.body.times;
-                this.id = this.response.id;
-            }
-        },
-        data() {
-            return {
-                loading: false,
-                times: 1,
-                name: '',
-                url: '',
-                id: '',
-                header: [],
-                request: [],
-                extract: [],
-                validate: [],
-                variables: [],
-                hooks: [],
-                method: 'GET',
-                dialogTableVisible: false,
-                save: false,
-                run: false,
-                summary: {},
-                activeTag: 'second',
-                httpOptions: [{
-                    label: 'GET',
-                }, {
-                    label: 'POST',
-                }, {
-                    label: 'PUT',
-                }, {
-                    label: 'DELETE',
-                }, {
-                    label: 'HEAD',
-                }, {
-                    label: 'OPTIONS',
-                }, {
-                    label: 'PATCH',
-                }],
-            }
-        },
-        name: "ApiBody"
     }
 </script>
 
