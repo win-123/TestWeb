@@ -60,36 +60,36 @@
                             placeholder="Value"
                         ></el-input>
 
-                        <el-row v-show="scope.row.type === 5">
-                            <el-col :span="7">
-                                <el-upload
-                                    :show-file-list="false"
-                                    :action="uploadFile(scope.row)"
-                                    :limit="1"
-                                    type="small"
-                                    :file-list="fileList"
-                                    :on-error="uploadError"
-                                    :on-success="uploadSuccess"
-                                >
-                                    <el-button
-                                        size="small"
-                                        type="primary"
-                                        @click="currentIndex=scope.$index"
-                                    >选择文件
-                                    </el-button>
-                                </el-upload>
-                            </el-col>
+                        <!--<el-row v-show="scope.row.type === 5">-->
+                            <!--<el-col :span="7">-->
+                                <!--<el-upload-->
+                                    <!--:show-file-list="false"-->
+                                    <!--:action="uploadFile(scope.row)"-->
+                                    <!--:limit="1"-->
+                                    <!--type="small"-->
+                                    <!--:file-list="fileList"-->
+                                    <!--:on-error="uploadError"-->
+                                    <!--:on-success="uploadSuccess"-->
+                                <!--&gt;-->
+                                    <!--<el-button-->
+                                        <!--size="small"-->
+                                        <!--type="primary"-->
+                                        <!--@click="currentIndex=scope.$index"-->
+                                    <!--&gt;选择文件-->
+                                    <!--</el-button>-->
+                                <!--</el-upload>-->
+                            <!--</el-col>-->
 
-                            <el-col :span="12">
-                                <el-badge
-                                    :value="scope.row.size"
-                                    style="margin-top: 8px"
-                                >
-                                    <i class="el-icon-document" v-text="scope.row.value"></i>
-                                </el-badge>
+                            <!--<el-col :span="12">-->
+                                <!--<el-badge-->
+                                    <!--:value="scope.row.size"-->
+                                    <!--style="margin-top: 8px"-->
+                                <!--&gt;-->
+                                    <!--<i class="el-icon-document" v-text="scope.row.value"></i>-->
+                                <!--</el-badge>-->
 
-                            </el-col>
-                        </el-row>
+                            <!--</el-col>-->
+                        <!--</el-row>-->
                     </template>
                 </el-table-column>
 

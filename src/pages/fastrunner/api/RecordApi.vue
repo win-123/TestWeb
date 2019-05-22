@@ -270,6 +270,7 @@
                 currentConfig: '请选择',
                 currentHost: '请选择',
                 back: false,
+                baseUrl: '',
                 del: false,
                 run: false,
                 response: '',

@@ -264,6 +264,7 @@
                 dialogTableVisible: false,
                 summary: {},
                 selectAPI: [],
+                baseUrl: '',
                 currentRow: '',
                 currentPage: 1,
                 apiData: {

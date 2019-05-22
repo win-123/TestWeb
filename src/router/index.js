@@ -25,7 +25,7 @@ export default new Router({
             name: 'Cover',
             component: Cover,
             meta: {
-                title: '封面'
+                title: '自动化测试平台'
             }
         },
         {
