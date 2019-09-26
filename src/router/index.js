@@ -13,7 +13,6 @@ import ReportList from '@/pages/reports/ReportList'
 import RecordConfig from '@/pages/fastrunner/config/RecordConfig'
 import Tasks from '@/pages/task/Tasks'
 import HostAddress from '@/pages/variables/HostAddress'
-import Cover from '@/pages/cover/Cover'
 
 Vue.use(Router)
 
@@ -22,10 +21,10 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'Cover',
-            component: Cover,
+            name: 'Login',
+            component: Login,
             meta: {
-                title: '自动化测试平台'
+                title: '用户登录'
             }
         },
         {
@@ -35,14 +34,16 @@ export default new Router({
             meta: {
                 title: '用户注册'
             }
-        }, {
-            path: '/fastrunner/login',
-            name: 'Login',
-            component: Login,
-            meta: {
-                title: '用户登录'
-            }
-        }, {
+        },
+        // {
+        //     path: '/fastrunner/login',
+        //     name: 'Login',
+        //     component: Login,
+        //     meta: {
+        //         title: '用户登录'
+        //     }
+        // },
+        {
 
             path: '/fastrunner',
             name: 'Index',
